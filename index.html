@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>S_F_PROTOCOL_100 // SURVIVANT</title>
+    <style>
+        :root { --neon: #00ff41; --bg: #0a0a0a; --gps-purple: #8338ec; }
+        body { background: var(--bg); color: var(--neon); font-family: monospace; margin: 0; text-transform: uppercase; }
+        
+        #header { display: flex; justify-content: space-between; padding: 20px; border-bottom: 2px solid var(--neon); }
+        
+        #radar-box {
+            position: relative;
+            width: 95%; height: 50vh;
+            margin: 10px auto;
+            border: 2px solid var(--neon);
+            background: #000 url('plan.png') no-repeat center; 
+            background-size: contain;
+            overflow: hidden;
+        }
+
+        /* RECALAGE DRASTIQUE SUR LE BLOCK 8 */
+        #gps-marker {
+            position: absolute; 
+            width: 18px; height: 18px;
+            background: var(--gps-purple); 
+            border-radius: 50%;
+            /* On réduit le 'left' pour le sortir de la zone noire */
+            top: 78%; 
+            left: 58%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px var(--gps-purple);
+            z-index: 100;
+            animation: breathe 2s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 5px var(--gps-purple); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.4); box-shadow: 0 0 30px var(--gps-purple); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 5px var(--gps-purple); opacity: 0.8; }
+        }
+
+        #gps-marker::after {
+            content: ""; position: absolute; top: 50%; left: 50%;
+            width: 100%; height: 100%; border: 1px solid var(--gps-purple);
+            border-radius: 50%; transform: translate(-50%, -50%);
+            animation: ripple 2s linear infinite;
+        }
+
+        @keyframes ripple { 0% { width: 14px; height: 14px; opacity: 1; } 100% { width: 100px; height: 100px; opacity: 0; } }
+
+        .cam-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; }
+        .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; }
+        video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
+        .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; }
+        #rules { padding: 20px; color: #aaa; font-size: 0.85rem; border-top: 1px solid #222; }
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <div>> SURVIVANT_001<br>> STATUS: EN ATTENTE</div>
+        <div style="text-align: right;">DÉBUT PROTOCOLE : 22/05/2026<br><span id="clock">00:00:00:00</span></div>
+    </div>
+
+    <div id="radar-box">
+        <div id="gps-marker"></div>
+    </div>
+
+    <div class="cam-grid">
+        <div class="cam-container"><div class="cam-label">CAM_01 // NEF_SUD</div><video src="cam1.mp4" autoplay muted loop playsinline></video></div>
+        <div class="cam-container"><div class="cam-label">CAM_02 // CREATE_B3</div><video src="cam2.mp4" autoplay muted loop playsinline></video></div>
+        <div class="cam-container"><div class="cam-label">CAM_03 // CHILL_ZONE</div><video src="cam3.mp4" autoplay muted loop playsinline></video></div>
+        <div class="cam-container"><div class="cam-label">CAM_04 // TWITCH_STREAM</div><video src="cam4.mp4" autoplay muted loop playsinline></video></div>
+    </div>
+
+    <div id="rules">
+        <h3 style="color:var(--neon); margin-top:0;">[PARAMÈTRES DE SURVIE]</h3>
+        - 100 JOURS SANS SORTIR DE STATION F.<br>
+        - EQUIPEMENT : 0 unité.
+    </div>
+
+    <script>
+        function update() {
+            const target = new Date("May 22, 2026 00:00:00").getTime();
+            const now = new Date().getTime();
+            const diff = target - now;
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            document.getElementById("clock").innerHTML = d + "J : " + h + "H : " + m + "M : " + s + "S";
+        }
+        setInterval(update, 1000);
+        update();
+    </script>
+</body>
+</html>
