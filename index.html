@@ -19,7 +19,6 @@
         
         #header { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 2px solid var(--neon); }
         
-        /* LE POINT DANS LE BLOC 1 */
         .status-point {
             display: inline-block;
             width: 8px;
@@ -30,12 +29,8 @@
             box-shadow: 0 0 8px var(--neon);
             animation: pulsePoint 1s infinite alternate;
         }
-        @keyframes pulsePoint {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
+        @keyframes pulsePoint { 0% { opacity: 0.3; } 100% { opacity: 1; } }
         
-        /* OPTIMISATION DESKTOP */
         #radar-box {
             position: relative; width: 95%; height: 38vh; margin: 15px auto 25px auto;
             border: 2px solid var(--neon); background: #000 url('plan.png') no-repeat center; 
@@ -63,115 +58,71 @@
         }
         @keyframes ripple { 0% { width: 14px; height: 14px; opacity: 1; } 100% { width: 100px; height: 100px; opacity: 0; } }
 
-        /* GRILLE ET CONTENEURS DES CAMÉRAS */
         .cam-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 15px; margin-bottom: 25px; }
         .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; cursor: pointer; transition: border-color 0.3s; }
         .cam-container:hover { border-color: var(--neon); }
         
-        /* Les vidéos sont là mais masquées par opacité au départ pour éviter tout flash noir */
         .cam-grid video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); opacity: 0; transition: opacity 0.3s ease; }
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; text-shadow: none; font-family: sans-serif; }
         
-        /* MINI LOADER INTERNE POUR CHAQUE CASE CAMÉRA */
-        .inline-loader {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            text-align: center;
-            z-index: 5;
-        }
-        .inline-loader-text {
-            font-size: 8px;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
-        }
-        .inline-bar-bg {
-            border: 1px solid var(--neon);
-            height: 10px;
-            width: 100%;
-            padding: 1px;
-            box-sizing: border-box;
-            background: #000;
-        }
-        .inline-bar-fill {
-            height: 100%;
-            background: var(--neon);
-            width: 0%;
-            transition: width 0.1s linear;
-        }
+        .inline-loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; text-align: center; z-index: 5; }
+        .inline-loader-text { font-size: 8px; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .inline-bar-bg { border: 1px solid var(--neon); height: 10px; width: 100%; padding: 1px; box-sizing: border-box; background: #000; }
+        .inline-bar-fill { height: 100%; background: var(--neon); width: 0%; transition: width 0.1s linear; }
 
         #rules { padding: 20px; color: #aaa; font-size: 0.9rem; border-top: 1px solid #222; text-shadow: none; }
 
         .matrix-cursor { color: var(--neon); font-weight: bold; animation: flash 1.2s infinite; margin-left: 2px; }
         @keyframes flash { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
+        /* DESIGN BOUTON PROTOCOLE DE SOUUMISSION */
+        .terminal-submit-btn {
+            background: transparent;
+            border: 1px solid var(--neon);
+            color: var(--neon);
+            font-family: "Courier New", Courier, monospace;
+            font-size: 11px;
+            padding: 3px 8px;
+            margin-left: 15px;
+            cursor: pointer;
+            text-transform: uppercase;
+            display: none; /* Masqué par défaut, apparaît quand on écrit */
+            box-shadow: 0 0 5px rgba(0, 255, 65, 0.2);
+            transition: all 0.2s ease;
+        }
+        .terminal-submit-btn:active {
+            background: var(--neon);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon);
+        }
+
         .flex-footer { display: flex; justify-content: space-between; gap: 40px; width: 100%; }
         .footer-left { flex: 1; text-align: left; }
         .footer-right { flex: 1; text-align: right; }
 
-        /* OVERLAY ET MODALE POPUP */
-        #video-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer;
-        }
-        #video-modal {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 33vw; border: 2px solid var(--neon); box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
-            z-index: 8001; background: #000; pointer-events: none; min-height: 250px;
-        }
+        #video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer; }
+        #video-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 33vw; border: 2px solid var(--neon); box-shadow: 0 0 40px rgba(0, 255, 65, 0.3); z-index: 8001; background: #000; pointer-events: none; min-height: 250px; }
         
-        /* BARRE DE CHARGEMENT MODALE (DECRYPTION) */
-        #modal-loader-container {
-            display: none;
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 75%;
-            text-align: center;
-        }
-        .modal-loader-text {
-            font-size: 14px;
-            margin-bottom: 15px;
-            letter-spacing: 0.5px;
-        }
-        .modal-bar-bg {
-            border: 2px solid var(--neon);
-            height: 24px;
-            width: 100%;
-            padding: 3px;
-            box-sizing: border-box;
-            background: #000;
-        }
-        .modal-bar-fill {
-            height: 100%;
-            background: var(--neon);
-            width: 0%;
-            transition: width 0.1s linear;
-        }
+        #modal-loader-container { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 75%; text-align: center; }
+        .modal-loader-text { font-size: 14px; margin-bottom: 15px; letter-spacing: 0.5px; }
+        .modal-bar-bg { border: 2px solid var(--neon); height: 24px; width: 100%; padding: 3px; box-sizing: border-box; background: #000; }
+        .modal-bar-fill { height: 100%; background: var(--neon); width: 0%; transition: width 0.1s linear; }
 
         #video-modal video { width: 100%; display: none; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
         .modal-label { position: absolute; top: 10px; left: 10px; font-size: 12px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; font-family: sans-serif; display: none; }
 
-        input.terminal-input { font-family: "Courier New", Courier, monospace; font-size: 16px; }
-
         @media (max-width: 768px) {
             #header { padding: 15px 10px; font-size: 0.8rem; }
             #header div { white-space: nowrap; }
-            
             #radar-box { height: 45vh; margin: 10px auto 20px auto; }
-
             .cam-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 30px; }
             .flex-footer { flex-direction: column; gap: 40px; }
             .footer-left { order: 1; }
             .footer-right { text-align: left; order: 2; }
-            
             .term-title { font-size: 1.1rem !important; line-height: 1.4; margin-bottom: 15px; }
             .terminal-prompt, #typed-email, .matrix-cursor { font-size: 1.1rem !important; }
-            
             .footer-right { font-size: 0.95rem !important; line-height: 1.5; }
             .footer-right h3 { font-size: 1.1rem !important; margin-bottom: 10px; }
-            
             #video-modal { width: 95vw !important; border-width: 2px; min-height: 200px; }
         }
     </style>
@@ -186,7 +137,6 @@
                 <div class="modal-bar-fill" id="modal-fill"></div>
             </div>
         </div>
-        
         <div class="modal-label" id="modal-label"></div>
         <video id="modal-video" autoplay muted loop playsinline></video>
     </div>
@@ -210,7 +160,6 @@
                 </div>
                 <video src="cam1.mp4" autoplay muted loop playsinline preload="auto" id="cam-vid-1"></video>
             </div>
-            
             <div class="cam-container" onclick="openVideo(this)">
                 <div class="cam-label">CAM_02 // CREATE_B3</div>
                 <div class="inline-loader" id="inline-loader-2">
@@ -219,7 +168,6 @@
                 </div>
                 <video src="cam2.mp4" autoplay muted loop playsinline preload="auto" id="cam-vid-2"></video>
             </div>
-            
             <div class="cam-container" onclick="openVideo(this)">
                 <div class="cam-label">CAM_03 // CHILL_ZONE</div>
                 <div class="inline-loader" id="inline-loader-3">
@@ -228,7 +176,6 @@
                 </div>
                 <video src="cam3.mp4" autoplay muted loop playsinline preload="auto" id="cam-vid-3"></video>
             </div>
-            
             <div class="cam-container" onclick="openVideo(this)">
                 <div class="cam-label">CAM_04 // TWITCH_STREAM</div>
                 <div class="inline-loader" id="inline-loader-4">
@@ -247,8 +194,9 @@
                         <span class="terminal-prompt" style="color: var(--neon); font-size: 16px; font-weight: bold; white-space: nowrap;">mail : </span>
                         <div style="position: relative; display: flex; align-items: center; min-width: 250px; margin-left: 5px; cursor: text;" onclick="document.getElementById('subscriber-email').focus()">
                             <span id="typed-email" style="color: var(--neon); font-size: 16px; white-space: pre;"></span><span class="matrix-cursor">/</span>
-                            <input type="email" id="subscriber-email" class="terminal-input" required autocomplete="off" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent;">
+                            <input type="email" id="subscriber-email" class="terminal-input" required autocomplete="off" enterkeyhint="go" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent;">
                         </div>
+                        <button type="submit" id="submit-btn" class="terminal-submit-btn">[ RUN ]</button>
                     </form>
                 </div>
 
@@ -283,19 +231,26 @@
         window.addEventListener('DOMContentLoaded', () => {
             const emailInput = document.getElementById('subscriber-email');
             const typedEmailSpan = document.getElementById('typed-email');
+            const submitBtn = document.getElementById('submit-btn');
+
             if (emailInput && typedEmailSpan) {
                 emailInput.addEventListener('input', (e) => {
                     typedEmailSpan.textContent = e.target.value;
+                    
+                    // Gestion de l'affichage dynamique du bouton secret [ RUN ]
+                    if (e.target.value.length > 0) {
+                        submitBtn.style.display = 'block';
+                    } else {
+                        submitBtn.style.display = 'none';
+                    }
                 });
             }
 
-            // Démarrage des caméras de la grille
             for (let i = 1; i <= 4; i++) {
                 setupGridVideoWithTrueEvent(i);
             }
         });
 
-        // 1. DYNAMIQUE DE LA GRILLE : Bloquée à 95% tant que la vidéo ne tourne pas physiquement
         function setupGridVideoWithTrueEvent(id) {
             const fill = document.getElementById(`inline-fill-${id}`);
             const loader = document.getElementById(`inline-loader-${id}`);
@@ -303,26 +258,20 @@
             
             if (!fill || !loader || !video) return;
 
-            // Début de la fausse progression saccadée
             setTimeout(() => { fill.style.width = '30%'; }, 100);
             setTimeout(() => { fill.style.width = '65%'; }, 350);
-            setTimeout(() => { 
-                fill.style.width = '95%'; // On bloque la barre ici exprès en attente du stream
-            }, 600);
+            setTimeout(() => { fill.style.width = '95%'; }, 600);
 
-            // ÉVÉNEMENT HISTORIQUE : Déclenché UNIQUEMENT quand le flux vidéo tourne en vrai
             video.onplaying = function() {
-                fill.style.width = '100%'; // On libère la barre
+                fill.style.width = '100%';
                 setTimeout(() => {
-                    loader.style.display = 'none'; // On retire le loader
-                    video.style.opacity = '1';     // On affiche l'image
+                    loader.style.display = 'none';
+                    video.style.opacity = '1';
                 }, 150);
             };
 
-            // Initialisation forcée
             video.load();
             video.play().catch(() => {
-                // Sécurité mobile (si l'OS bloque l'autoplay sans clic, on libère le loader au bout de 2s pour pas bloquer)
                 setTimeout(() => {
                     if (loader.style.display !== 'none') {
                         fill.style.width = '100%';
@@ -333,7 +282,6 @@
             });
         }
 
-        // 2. DYNAMIQUE DE LA MODALE : Bloquée à 95% jusqu'à ce que la vidéo soit prête dans le popup
         function openVideo(element) {
             const targetVideo = element.querySelector('video');
             const src = targetVideo.src;
@@ -347,17 +295,12 @@
             modalLoaderContainer.style.display = 'block';
             modalFill.style.width = '0%';
             
-            // Progression saccadée initiale
             setTimeout(() => { modalFill.style.width = '20%'; }, 80);
             setTimeout(() => { modalFill.style.width = '55%'; }, 250); 
-            setTimeout(() => { 
-                modalFill.style.width = '95%'; // Blocage tactique à 95%
-            }, 500); 
+            setTimeout(() => { modalFill.style.width = '95%'; }, 500); 
 
-            // ÉVÉNEMENT DE RENDU : Déclenché quand le buffer mobile a chargé assez de données pour afficher l'image
             modalVideo.onplaying = function() {
-                modalFill.style.width = '100%'; // Libération immédiate
-                
+                modalFill.style.width = '100%';
                 setTimeout(() => {
                     modalLoaderContainer.style.display = 'none';
                     modalVideo.style.display = 'block';
@@ -365,11 +308,9 @@
                 }, 150);
             };
 
-            // Injection et décryptage forcé
             modalVideo.src = src;
             modalVideo.load();
             modalVideo.play().catch(() => {
-                // Sécurité bypass mobile extrême (si l'OS exige un clic physique à l'intérieur de la modale)
                 setTimeout(() => {
                     if (modalLoaderContainer.style.display !== 'none') {
                         modalFill.style.width = '100%';
@@ -385,7 +326,6 @@
             videoOverlay.style.display = 'none';
             videoModal.style.display = 'none';
             modalVideo.src = ""; 
-            
             modalVideo.style.display = 'none';
             modalLabel.style.display = 'none';
             modalLoaderContainer.style.display = 'none';
@@ -441,14 +381,12 @@
             const matrixInterval = setInterval(() => {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
                 ctx.fillStyle = '#00ff41';
                 ctx.font = fontSize + 'px monospace';
 
                 for (let i = 0; i < rainDrops.length; i++) {
                     const text = chars[Math.floor(Math.random() * chars.length)];
                     ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-                    
                     if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                         rainDrops[i] = 0;
                     }
@@ -468,7 +406,6 @@
         function handleBackClick() {
             backClickCount++;
             const errEl = document.getElementById('back-error');
-            
             if (backClickCount < 3) {
                 if (errEl) {
                     errEl.innerHTML = `> ERROR_0x445: ACCESS_DENIED. DECRYPTION_FAILED (ATTEMPT ${backClickCount}/3).`;
