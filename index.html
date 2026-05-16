@@ -6,19 +6,29 @@
     <title>S_F_PROTOCOL_100 // SURVIVANT</title>
     <style>
         :root { --neon: #00ff41; --bg: #0a0a0a; --gps-purple: #8338ec; }
-        body { background: var(--bg); color: var(--neon); font-family: monospace; margin: 0; text-transform: uppercase; }
         
-        #header { display: flex; justify-content: space-between; padding: 20px; border-bottom: 2px solid var(--neon); }
+        body { 
+            background: var(--bg); 
+            color: var(--neon); 
+            font-family: "Courier New", Courier, "Lucida Console", Monaco, monospace; 
+            margin: 0; 
+            text-transform: uppercase; 
+            letter-spacing: -0.5px;
+            text-shadow: 0 0 4px rgba(0, 255, 65, 0.4); 
+        }
         
+        #header { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 2px solid var(--neon); }
+        
+        /* OPTIMISATION DESKTOP : Hauteur réduite et marge basse augmentée pour la respiration */
         #radar-box {
-            position: relative; width: 95%; height: 50vh; margin: 10px auto;
+            position: relative; width: 95%; height: 38vh; margin: 15px auto 25px auto;
             border: 2px solid var(--neon); background: #000 url('plan.png') no-repeat center; 
             background-size: contain; overflow: hidden;
         }
 
         #gps-marker {
             position: absolute; width: 18px; height: 18px; background: var(--gps-purple); 
-            border-radius: 50%; top: 78%; left: 58%; transform: translate(-50%, -50%);
+            border-radius: 50%; top: 72%; left: 68%; transform: translate(-50%, -50%);
             box-shadow: 0 0 20px var(--gps-purple); z-index: 100;
             animation: breathe 2s ease-in-out infinite;
         }
@@ -37,22 +47,21 @@
         }
         @keyframes ripple { 0% { width: 14px; height: 14px; opacity: 1; } 100% { width: 100px; height: 100px; opacity: 0; } }
 
-        .cam-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; }
+        .cam-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 15px; margin-bottom: 25px; }
         .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; cursor: pointer; transition: border-color 0.3s; }
         .cam-container:hover { border-color: var(--neon); }
         video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); pointer-events: none; }
-        .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; }
+        .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; text-shadow: none; font-family: sans-serif; }
         
-        #rules { padding: 20px; color: #aaa; font-size: 0.85rem; border-top: 1px solid #222; }
+        #rules { padding: 20px; color: #aaa; font-size: 0.9rem; border-top: 1px solid #222; text-shadow: none; }
 
         .matrix-cursor { color: var(--neon); font-weight: bold; animation: flash 1.2s infinite; margin-left: 2px; }
         @keyframes flash { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
-        .flex-footer { display: flex; justify-content: space-between; gap: 20px; width: 100%; }
+        .flex-footer { display: flex; justify-content: space-between; gap: 40px; width: 100%; }
         .footer-left { flex: 1; text-align: left; }
         .footer-right { flex: 1; text-align: right; }
 
-        /* OVERLAY ET MODAL BUREAU */
         #video-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer;
@@ -63,24 +72,29 @@
             z-index: 8001; background: #000; pointer-events: none;
         }
         #video-modal video { width: 100%; display: block; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
-        .modal-label { position: absolute; top: 10px; left: 10px; font-size: 12px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; }
+        .modal-label { position: absolute; top: 10px; left: 10px; font-size: 12px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; font-family: sans-serif; }
 
-        /* 📱 RESPONSIVE MOBILE EXTREME (x2.5) */
+        input.terminal-input { font-family: "Courier New", Courier, monospace; font-size: 16px; }
+
         @media (max-width: 768px) {
-            .cam-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .flex-footer { flex-direction: column; gap: 35px; }
+            #header { padding: 15px 10px; font-size: 0.8rem; }
+            #header div { white-space: nowrap; }
+            
+            /* On garde une hauteur exploitable pour le plan sur mobile */
+            #radar-box { height: 45vh; margin: 10px auto 20px auto; }
+
+            .cam-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 30px; }
+            .flex-footer { flex-direction: column; gap: 40px; }
             .footer-left { order: 1; }
             .footer-right { text-align: left; order: 2; }
             
-            /* Textes énormes x2.5 */
-            .term-title { font-size: 1.8rem !important; line-height: 1.4; margin-bottom: 15px; }
-            .terminal-prompt, #typed-email, .matrix-cursor { font-size: 1.5rem !important; }
-            .footer-right { font-size: 1.4rem !important; line-height: 1.6; }
-            .footer-right h3 { font-size: 1.6rem !important; margin-bottom: 10px; }
+            .term-title { font-size: 1.1rem !important; line-height: 1.4; margin-bottom: 15px; }
+            .terminal-prompt, #typed-email, .matrix-cursor { font-size: 1.1rem !important; }
             
-            /* Modal Vidéo Géant */
-            #video-modal { width: 95vw !important; border-width: 4px; }
-            .modal-label { font-size: 1.2rem; padding: 8px 12px; }
+            .footer-right { font-size: 0.95rem !important; line-height: 1.5; }
+            .footer-right h3 { font-size: 1.1rem !important; margin-bottom: 10px; }
+            
+            #video-modal { width: 95vw !important; border-width: 2px; }
         }
     </style>
 </head>
@@ -95,7 +109,7 @@
     <div id="main-content">
         <div id="header">
             <div>> SURVIVANT_001<br>> STATUS: EN ATTENTE</div>
-            <div style="text-align: right;">DÉBUT PROTOCOLE : 22/05/2026<br><span id="clock">00:00:00:00</span></div>
+            <div style="text-align: right;">DÉBUT PROTOCOLE: 22/05/2026<br><span id="clock">00:00:00:00</span></div>
         </div>
 
         <div id="radar-box">
@@ -116,8 +130,8 @@
                     <form onsubmit="triggerMatrixMelt(event)" style="display: flex; align-items: center; margin-top: 10px;">
                         <span class="terminal-prompt" style="color: var(--neon); font-size: 16px; font-weight: bold; white-space: nowrap;">mail : </span>
                         <div style="position: relative; display: flex; align-items: center; min-width: 250px; margin-left: 5px; cursor: text;" onclick="document.getElementById('subscriber-email').focus()">
-                            <span id="typed-email" style="color: var(--neon); font-size: 16px; white-space: pre; font-family: monospace;"></span><span class="matrix-cursor">/</span>
-                            <input type="email" id="subscriber-email" required autocomplete="off" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent; font-family: monospace; font-size: 16px;">
+                            <span id="typed-email" style="color: var(--neon); font-size: 16px; white-space: pre;"></span><span class="matrix-cursor">/</span>
+                            <input type="email" id="subscriber-email" class="terminal-input" required autocomplete="off" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent;">
                         </div>
                     </form>
                 </div>
@@ -266,10 +280,10 @@
 
         function showWaitingScreen() {
             document.body.innerHTML = `
-                <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:#000; color:#00ff41; font-family:monospace; font-size:22px; letter-spacing:2px; text-align:center; padding:20px; box-sizing:border-box;">
+                <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:#000; color:#00ff41; font-family:'Courier New', Courier, monospace; font-size:22px; letter-spacing:1px; text-align:center; padding:20px; box-sizing:border-box; text-shadow: 0 0 5px rgba(0,255,65,0.5);">
                     <div style="margin-bottom: 20px;">> WAITING TO LOAD THE PROCESS<span class="matrix-cursor">/</span></div>
-                    <div id="back-error" style="color: #ff3333; font-size: 14px; min-height: 20px; margin-bottom: 30px; letter-spacing: 1px; font-weight: bold;"></div>
-                    <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:monospace; padding:10px 20px; cursor:pointer; font-size:14px; text-transform:uppercase; letter-spacing:2px; transition: all 0.3s;">[ BACK ]</button>
+                    <div id="back-error" style="color: #ff3333; font-size: 14px; min-height: 20px; margin-bottom: 30px; font-weight: bold; text-shadow: none;"></div>
+                    <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:'Courier New', Courier, monospace; padding:10px 20px; cursor:pointer; font-size:14px; text-transform:uppercase; transition: all 0.3s; text-shadow: 0 0 5px rgba(0,255,65,0.5); box-shadow: 0 0 10px rgba(0,255,65,0.2);">[ BACK ]</button>
                 </div>
             `;
         }
