@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>S_F_PROTOCOL_100 // SURVIVANT</title>
     <style>
         :root { --neon: #00ff41; --bg: #0a0a0a; --gps-purple: #8338ec; }
@@ -10,25 +11,15 @@
         #header { display: flex; justify-content: space-between; padding: 20px; border-bottom: 2px solid var(--neon); }
         
         #radar-box {
-            position: relative;
-            width: 95%; height: 50vh;
-            margin: 10px auto;
-            border: 2px solid var(--neon);
-            background: #000 url('plan.png') no-repeat center; 
-            background-size: contain;
-            overflow: hidden;
+            position: relative; width: 95%; height: 50vh; margin: 10px auto;
+            border: 2px solid var(--neon); background: #000 url('plan.png') no-repeat center; 
+            background-size: contain; overflow: hidden;
         }
 
         #gps-marker {
-            position: absolute; 
-            width: 18px; height: 18px;
-            background: var(--gps-purple); 
-            border-radius: 50%;
-            top: 78%; 
-            left: 58%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px var(--gps-purple);
-            z-index: 100;
+            position: absolute; width: 18px; height: 18px; background: var(--gps-purple); 
+            border-radius: 50%; top: 78%; left: 58%; transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px var(--gps-purple); z-index: 100;
             animation: breathe 2s ease-in-out infinite;
         }
 
@@ -44,107 +35,52 @@
             border-radius: 50%; transform: translate(-50%, -50%);
             animation: ripple 2s linear infinite;
         }
-
         @keyframes ripple { 0% { width: 14px; height: 14px; opacity: 1; } 100% { width: 100px; height: 100px; opacity: 0; } }
 
-        /* GRILLE DE CAMERAS AVEC CURSEUR POINTEUR */
         .cam-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; }
         .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; cursor: pointer; transition: border-color 0.3s; }
         .cam-container:hover { border-color: var(--neon); }
-        video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); pointer-events: none; }
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; }
         
         #rules { padding: 20px; color: #aaa; font-size: 0.85rem; border-top: 1px solid #222; }
 
-        .matrix-cursor {
-            color: var(--neon); font-weight: bold; animation: flash 1.2s infinite; margin-left: 2px;
-        }
+        .matrix-cursor { color: var(--neon); font-weight: bold; animation: flash 1.2s infinite; margin-left: 2px; }
         @keyframes flash { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
         .flex-footer { display: flex; justify-content: space-between; gap: 20px; width: 100%; }
         .footer-left { flex: 1; text-align: left; }
         .footer-right { flex: 1; text-align: right; }
 
-        /* OVERLAY ET MODAL POUR LA VIDEO AGRANDIE */
+        /* OVERLAY ET MODAL BUREAU */
         #video-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer;
         }
         #video-modal {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 33vw; /* 1/3 de l'écran sur Bureau */
-            border: 2px solid var(--neon); box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
+            width: 33vw; border: 2px solid var(--neon); box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
             z-index: 8001; background: #000; pointer-events: none;
         }
-        
-        /* STYLE DU CHARGEMENT TERMINAL */
-        #modal-loader {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--neon);
-            font-size: 1.2rem;
-            text-align: center;
-            z-index: 20;
-            display: none; /* Caché par défaut */
-            width: 100%;
-            letter-spacing: 2px;
-        }
-        #loader-text { margin-bottom: 10px; animation: flash 1.2s infinite; }
-        
-        /* On masque la vidéo par défaut le temps du chargement */
-        #modal-video {
-            opacity: 0;
-            transition: opacity 0.2s ease-in;
-            width: 100%; display: block; filter: grayscale(100%) contrast(1.2) brightness(0.7);
-        }
-        #modal-video.loaded {
-            opacity: 1; /* Apparaît doucement quand chargée */
-        }
-        
+        #video-modal video { width: 100%; display: block; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
         .modal-label { position: absolute; top: 10px; left: 10px; font-size: 12px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; }
 
-        /* RESPONSIVE MOBILE : POLICE PLUS GRANDE ET VIDEO ADAPTEE */
+        /* 📱 RESPONSIVE MOBILE EXTREME (x2.5) */
         @media (max-width: 768px) {
-            .cam-grid { grid-template-columns: repeat(2, 1fr); }
-            .flex-footer { flex-direction: column; gap: 20px; }
+            .cam-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .flex-footer { flex-direction: column; gap: 35px; }
             .footer-left { order: 1; }
             .footer-right { text-align: left; order: 2; }
             
-            /* 1. Ajustement du point (un peu plus haut, un peu plus à droite) */
-            #gps-marker {
-                top: 70%;  
-                left: 65%; 
-            }
-
-            /* 2. Vidéo modale (Agrandie x2 par rapport à sa taille de base sur mobile) */
-            #video-modal { 
-                width: 90vw; 
-                transform: translate(-50%, -50%) scale(1.5); 
-            }
-
-            /* 3. Augmentation massive de la taille des mots (Haut et Bas) */
-            #header { 
-                font-size: 1.5em; 
-                flex-direction: column; 
-                align-items: center;
-                text-align: center;
-                gap: 15px;
-            }
-            #header div { text-align: center !important; }
+            /* Textes énormes x2.5 */
+            .term-title { font-size: 1.8rem !important; line-height: 1.4; margin-bottom: 15px; }
+            .terminal-prompt, #typed-email, .matrix-cursor { font-size: 1.5rem !important; }
+            .footer-right { font-size: 1.4rem !important; line-height: 1.6; }
+            .footer-right h3 { font-size: 1.6rem !important; margin-bottom: 10px; }
             
-            /* Textes du bas */
-            .footer-right { font-size: 2.2rem; line-height: 1.6; }
-            .footer-right h3 { font-size: 2.5rem !important; }
-            
-            .footer-left h3 { font-size: 2.5rem !important; line-height: 1.4; }
-            .footer-left span { font-size: 2.2rem !important; }
-            .footer-left input { font-size: 2.2rem !important; }
-            
-            #typed-email { font-size: 2.2rem !important; }
-            
-            /* Ajustement de la taille du loader sur mobile pour pas que ça déborde */
-            #modal-loader { font-size: 0.8rem; }
+            /* Modal Vidéo Géant */
+            #video-modal { width: 95vw !important; border-width: 4px; }
+            .modal-label { font-size: 1.2rem; padding: 8px 12px; }
         }
     </style>
 </head>
@@ -153,12 +89,6 @@
     <div id="video-overlay"></div>
     <div id="video-modal">
         <div class="modal-label" id="modal-label"></div>
-        
-        <div id="modal-loader">
-            <div id="loader-text">> ÉTABLISSEMENT DE LA CONNEXION...</div>
-            <div id="loader-bar">[░░░░░░░░░░░░░░░░░░░░] 0%</div>
-        </div>
-
         <video id="modal-video" autoplay muted loop playsinline></video>
     </div>
 
@@ -173,18 +103,18 @@
         </div>
 
         <div class="cam-grid">
-            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_01 // NEF_SUD</div><video src="cam1.mp4" autoplay muted loop playsinline style="filter: grayscale(100%) contrast(1.2) brightness(0.7);"></video></div>
-            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_02 // CREATE_B3</div><video src="cam2.mp4" autoplay muted loop playsinline style="filter: grayscale(100%) contrast(1.2) brightness(0.7);"></video></div>
-            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_03 // CHILL_ZONE</div><video src="cam3.mp4" autoplay muted loop playsinline style="filter: grayscale(100%) contrast(1.2) brightness(0.7);"></video></div>
-            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_04 // TWITCH_STREAM</div><video src="cam4.mp4" autoplay muted loop playsinline style="filter: grayscale(100%) contrast(1.2) brightness(0.7);"></video></div>
+            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_01 // NEF_SUD</div><video src="cam1.mp4" autoplay muted loop playsinline></video></div>
+            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_02 // CREATE_B3</div><video src="cam2.mp4" autoplay muted loop playsinline></video></div>
+            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_03 // CHILL_ZONE</div><video src="cam3.mp4" autoplay muted loop playsinline></video></div>
+            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_04 // TWITCH_STREAM</div><video src="cam4.mp4" autoplay muted loop playsinline></video></div>
         </div>
 
         <div id="rules">
             <div class="flex-footer">
                 <div class="footer-left">
-                    <h3 style="color:var(--neon); margin-top:0; font-size: 0.95rem;">> S'INSCRIRE POUR CONNAITRE LES PROCHAINES INSTRUCTIONS</h3>
+                    <h3 class="term-title" style="color:var(--neon); margin-top:0;">> S'INSCRIRE POUR CONNAITRE LES PROCHAINES INSTRUCTIONS</h3>
                     <form onsubmit="triggerMatrixMelt(event)" style="display: flex; align-items: center; margin-top: 10px;">
-                        <span style="color: var(--neon); font-size: 16px; font-weight: bold; white-space: nowrap;">mail : </span>
+                        <span class="terminal-prompt" style="color: var(--neon); font-size: 16px; font-weight: bold; white-space: nowrap;">mail : </span>
                         <div style="position: relative; display: flex; align-items: center; min-width: 250px; margin-left: 5px; cursor: text;" onclick="document.getElementById('subscriber-email').focus()">
                             <span id="typed-email" style="color: var(--neon); font-size: 16px; white-space: pre; font-family: monospace;"></span><span class="matrix-cursor">/</span>
                             <input type="email" id="subscriber-email" required autocomplete="off" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent; font-family: monospace; font-size: 16px;">
@@ -210,9 +140,7 @@
             if (localStorage.getItem('survivor_registered') === 'true') {
                 showWaitingScreen();
             }
-        } catch (e) {
-            console.warn("Sécurité locale active.");
-        }
+        } catch (e) {}
 
         window.addEventListener('DOMContentLoaded', () => {
             const emailInput = document.getElementById('subscriber-email');
@@ -224,7 +152,6 @@
             }
         });
 
-        // GESTIONNAIRE D'AGRANDISSEMENT DES VIDEOS
         const videoOverlay = document.getElementById('video-overlay');
         const videoModal = document.getElementById('video-modal');
         const modalVideo = document.getElementById('modal-video');
@@ -239,47 +166,12 @@
             
             videoOverlay.style.display = 'block';
             videoModal.style.display = 'block';
-
-            // --- DEBUT DU PROTOCOLE DE CHARGEMENT ---
-            const loader = document.getElementById('modal-loader');
-            const loaderBar = document.getElementById('loader-bar');
-            
-            loader.style.display = 'block'; // Affiche le texte terminal
-            modalVideo.classList.remove('loaded'); // Cache la vidéo
-
-            let progress = 0;
-            const totalBlocks = 20; // Nombre de blocs dans la barre
-            
-            // Boucle qui fait avancer la barre aléatoirement
-            const interval = setInterval(() => {
-                progress += Math.floor(Math.random() * 15) + 5; // Avance de 5 à 20% d'un coup
-                if (progress > 100) progress = 100;
-
-                const filledBlocks = Math.floor((progress / 100) * totalBlocks);
-                const emptyBlocks = totalBlocks - filledBlocks;
-                
-                const bar = '█'.repeat(filledBlocks) + '░'.repeat(emptyBlocks);
-                loaderBar.innerText = `[${bar}] ${progress}%`;
-
-                // Quand ça arrive à 100%
-                if (progress === 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        loader.style.display = 'none'; // Cache le faux terminal
-                        modalVideo.classList.add('loaded'); // Affiche la vraie vidéo
-                    }, 200); // Petit temps de pause pour que l'oeil voit le 100%
-                }
-            }, 80); // Vitesse de rafraîchissement
         }
 
         videoOverlay.addEventListener('click', () => {
             videoOverlay.style.display = 'none';
             videoModal.style.display = 'none';
-            modalVideo.src = ""; // Coupe le flux vidéo pour économiser la bande passante
-            
-            // Réinitialise le loader au cas où on quitte avant la fin
-            document.getElementById('modal-loader').style.display = 'none';
-            modalVideo.classList.remove('loaded');
+            modalVideo.src = ""; 
         });
 
         function update() {
@@ -314,8 +206,8 @@
                     from_name: "Terminal Protocol 100"
                 })
             })
-            .then(res => console.log("Données transmises."))
-            .catch(err => console.error("Erreur transmission:", err));
+            .then(res => console.log("Transmis"))
+            .catch(err => console.error(err));
 
             const canvas = document.getElementById('matrix-canvas');
             canvas.style.display = 'block';
