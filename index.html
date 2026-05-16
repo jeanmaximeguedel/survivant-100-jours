@@ -35,7 +35,7 @@
             100% { opacity: 1; }
         }
         
-        /* OPTIMISATION DESKTOP : Hauteur réduite et marge basse augmentée pour la respiration */
+        /* OPTIMISATION DESKTOP */
         #radar-box {
             position: relative; width: 95%; height: 38vh; margin: 15px auto 25px auto;
             border: 2px solid var(--neon); background: #000 url('plan.png') no-repeat center; 
@@ -63,14 +63,42 @@
         }
         @keyframes ripple { 0% { width: 14px; height: 14px; opacity: 1; } 100% { width: 100px; height: 100px; opacity: 0; } }
 
+        /* GRILLE ET CONTENEURS DES CAMÉRAS */
         .cam-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 15px; margin-bottom: 25px; }
         .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; cursor: pointer; transition: border-color 0.3s; }
         .cam-container:hover { border-color: var(--neon); }
         
-        /* CORRECTION ICI : Autoriser à nouveau les clics sur la vidéo */
-        video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
+        .cam-grid video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); display: none; }
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; text-shadow: none; font-family: sans-serif; }
         
+        /* MINI LOADER INTERNE POUR CHAQUE CASE CAMÉRA */
+        .inline-loader {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            text-align: center;
+            z-index: 5;
+        }
+        .inline-loader-text {
+            font-size: 8px;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+        .inline-bar-bg {
+            border: 1px solid var(--neon);
+            height: 10px;
+            width: 100%;
+            padding: 1px;
+            box-sizing: border-box;
+            background: #000;
+        }
+        .inline-bar-fill {
+            height: 100%;
+            background: var(--neon);
+            width: 0%;
+        }
+
         #rules { padding: 20px; color: #aaa; font-size: 0.9rem; border-top: 1px solid #222; text-shadow: none; }
 
         .matrix-cursor { color: var(--neon); font-weight: bold; animation: flash 1.2s infinite; margin-left: 2px; }
@@ -80,6 +108,7 @@
         .footer-left { flex: 1; text-align: left; }
         .footer-right { flex: 1; text-align: right; }
 
+        /* OVERLAY ET MODALE POPUP */
         #video-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer;
@@ -90,8 +119,8 @@
             z-index: 8001; background: #000; pointer-events: none; min-height: 250px;
         }
         
-        /* BARRE DE CHARGEMENT RETRO SACCADÉE */
-        #loader-container {
+        /* BARRE DE CHARGEMENT MODALE (DECRYPTION) */
+        #modal-loader-container {
             display: none;
             position: absolute;
             top: 50%; left: 50%;
@@ -99,12 +128,12 @@
             width: 75%;
             text-align: center;
         }
-        .loader-text {
+        .modal-loader-text {
             font-size: 14px;
             margin-bottom: 15px;
             letter-spacing: 0.5px;
         }
-        .loader-bar-bg {
+        .modal-bar-bg {
             border: 2px solid var(--neon);
             height: 24px;
             width: 100%;
@@ -112,7 +141,7 @@
             box-sizing: border-box;
             background: #000;
         }
-        .loader-bar-fill {
+        .modal-bar-fill {
             height: 100%;
             background: var(--neon);
             width: 0%;
@@ -148,10 +177,10 @@
 
     <div id="video-overlay"></div>
     <div id="video-modal">
-        <div id="loader-container">
-            <div class="loader-text">> DECRYPTION IN PROGRESS...</div>
-            <div class="loader-bar-bg">
-                <div class="loader-bar-fill" id="loader-fill"></div>
+        <div id="modal-loader-container">
+            <div class="modal-loader-text">> DECRYPTION IN PROGRESS...</div>
+            <div class="modal-bar-bg">
+                <div class="modal-bar-fill" id="modal-fill"></div>
             </div>
         </div>
         
@@ -170,10 +199,41 @@
         </div>
 
         <div class="cam-grid">
-            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_01 // NEF_SUD</div><video src="cam1.mp4" autoplay muted loop playsinline></video></div>
-            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_02 // CREATE_B3</div><video src="cam2.mp4" autoplay muted loop playsinline></video></div>
-            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_03 // CHILL_ZONE</div><video src="cam3.mp4" autoplay muted loop playsinline></video></div>
-            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_04 // TWITCH_STREAM</div><video src="cam4.mp4" autoplay muted loop playsinline></video></div>
+            <div class="cam-container" onclick="openVideo(this)">
+                <div class="cam-label">CAM_01 // NEF_SUD</div>
+                <div class="inline-loader" id="inline-loader-1">
+                    <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
+                    <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-1"></div></div>
+                </div>
+                <video src="cam1.mp4" autoplay muted loop playsinline preload="auto" id="cam-vid-1"></video>
+            </div>
+            
+            <div class="cam-container" onclick="openVideo(this)">
+                <div class="cam-label">CAM_02 // CREATE_B3</div>
+                <div class="inline-loader" id="inline-loader-2">
+                    <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
+                    <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-2"></div></div>
+                </div>
+                <video src="cam2.mp4" autoplay muted loop playsinline preload="auto" id="cam-vid-2"></video>
+            </div>
+            
+            <div class="cam-container" onclick="openVideo(this)">
+                <div class="cam-label">CAM_03 // CHILL_ZONE</div>
+                <div class="inline-loader" id="inline-loader-3">
+                    <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
+                    <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-3"></div></div>
+                </div>
+                <video src="cam3.mp4" autoplay muted loop playsinline preload="auto" id="cam-vid-3"></video>
+            </div>
+            
+            <div class="cam-container" onclick="openVideo(this)">
+                <div class="cam-label">CAM_04 // TWITCH_STREAM</div>
+                <div class="inline-loader" id="inline-loader-4">
+                    <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
+                    <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-4"></div></div>
+                </div>
+                <video src="cam4.mp4" autoplay muted loop playsinline preload="auto" id="cam-vid-4"></video>
+            </div>
         </div>
 
         <div id="rules">
@@ -203,6 +263,14 @@
     <script>
         let backClickCount = 0;
 
+        const videoOverlay = document.getElementById('video-overlay');
+        const videoModal = document.getElementById('video-modal');
+        const modalVideo = document.getElementById('modal-video');
+        const modalLabel = document.getElementById('modal-label');
+        
+        const modalLoaderContainer = document.getElementById('modal-loader-container');
+        const modalFill = document.getElementById('modal-fill');
+
         try {
             if (localStorage.getItem('survivor_registered') === 'true') {
                 showWaitingScreen();
@@ -217,18 +285,42 @@
                     typedEmailSpan.textContent = e.target.value;
                 });
             }
+
+            // Lancement des mini-loaders sur chaque case de caméra au démarrage
+            for (let i = 1; i <= 4; i++) {
+                triggerInlineLoader(i);
+            }
         });
 
-        const videoOverlay = document.getElementById('video-overlay');
-        const videoModal = document.getElementById('video-modal');
-        const modalVideo = document.getElementById('modal-video');
-        const modalLabel = document.getElementById('modal-label');
-        
-        const loaderContainer = document.getElementById('loader-container');
-        const loaderFill = document.getElementById('loader-fill');
+        // GESTION DU INITIALIZING SACCADÉ DIRECTEMENT DANS LES CASES CAMÉRA
+        function triggerInlineLoader(id) {
+            const fill = document.getElementById(`inline-fill-${id}`);
+            const loader = document.getElementById(`inline-loader-${id}`);
+            const video = document.getElementById(`cam-vid-${id}`);
+            
+            if (!fill || !loader || !video) return;
 
+            // Avancée saccadée style vieux serveur
+            setTimeout(() => { fill.style.width = '20%'; }, 50 + (id * 40));
+            setTimeout(() => { fill.style.width = '25%'; }, 300 + (id * 20));
+            setTimeout(() => { fill.style.width = '70%'; }, 550 + (id * 50));
+            setTimeout(() => { 
+                fill.style.width = '100%'; 
+                
+                // Dès que les 100% sont atteints, on dégage le loader et on lance la vidéo
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    video.style.display = 'block';
+                    video.load();
+                    video.play().catch(() => {});
+                }, 150);
+            }, 900 + (id * 30));
+        }
+
+        // DOUBLE CLIC / OPEN AVEC LE DECRYPTION INTERNE À LA POPUP
         function openVideo(element) {
-            const src = element.querySelector('video').src;
+            const targetVideo = element.querySelector('video');
+            const src = targetVideo.src;
             const labelText = element.querySelector('.cam-label').innerText;
             
             videoOverlay.style.display = 'block';
@@ -236,24 +328,27 @@
             
             modalVideo.style.display = 'none';
             modalLabel.style.display = 'none';
-            loaderContainer.style.display = 'block';
-            loaderFill.style.width = '0%';
+            modalLoaderContainer.style.display = 'block';
+            modalFill.style.width = '0%';
             
-            // Progression saccadée asymétrique (style Windows Server)
-            setTimeout(() => { loaderFill.style.width = '15%'; }, 80);
-            setTimeout(() => { loaderFill.style.width = '18%'; }, 450); 
-            setTimeout(() => { loaderFill.style.width = '62%'; }, 600); 
-            setTimeout(() => { loaderFill.style.width = '67%'; }, 900); 
+            // Progression brute
+            setTimeout(() => { modalFill.style.width = '15%'; }, 80);
+            setTimeout(() => { modalFill.style.width = '18%'; }, 450); 
+            setTimeout(() => { modalFill.style.width = '62%'; }, 600); 
+            setTimeout(() => { modalFill.style.width = '67%'; }, 900); 
             setTimeout(() => { 
-                loaderFill.style.width = '100%'; 
+                modalFill.style.width = '100%'; 
                 
                 setTimeout(() => {
-                    loaderContainer.style.display = 'none';
+                    modalLoaderContainer.style.display = 'none';
                     modalVideo.src = src;
                     modalLabel.innerText = labelText;
                     
                     modalVideo.style.display = 'block';
                     modalLabel.style.display = 'block';
+                    
+                    modalVideo.load();
+                    modalVideo.play().catch(() => {});
                 }, 150);
             }, 1150);
         }
@@ -265,7 +360,7 @@
             
             modalVideo.style.display = 'none';
             modalLabel.style.display = 'none';
-            loaderContainer.style.display = 'none';
+            modalLoaderContainer.style.display = 'none';
         });
 
         function update() {
