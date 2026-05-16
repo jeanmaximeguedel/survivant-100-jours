@@ -68,7 +68,8 @@
         .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; cursor: pointer; transition: border-color 0.3s; }
         .cam-container:hover { border-color: var(--neon); }
         
-        .cam-grid video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); display: none; }
+        /* Les vidéos sont là mais masquées par opacité au départ pour éviter tout flash noir */
+        .cam-grid video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); opacity: 0; transition: opacity 0.3s ease; }
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; text-shadow: none; font-family: sans-serif; }
         
         /* MINI LOADER INTERNE POUR CHAQUE CASE CAMÉRA */
@@ -97,6 +98,7 @@
             height: 100%;
             background: var(--neon);
             width: 0%;
+            transition: width 0.1s linear;
         }
 
         #rules { padding: 20px; color: #aaa; font-size: 0.9rem; border-top: 1px solid #222; text-shadow: none; }
@@ -145,6 +147,7 @@
             height: 100%;
             background: var(--neon);
             width: 0%;
+            transition: width 0.1s linear;
         }
 
         #video-modal video { width: 100%; display: none; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
@@ -286,43 +289,56 @@
                 });
             }
 
-            // Lancement des mini-loaders sur chaque case de caméra au démarrage
+            // Démarrage des caméras de la grille
             for (let i = 1; i <= 4; i++) {
-                triggerInlineLoader(i);
+                setupGridVideoWithTrueEvent(i);
             }
         });
 
-        // GESTION DU INITIALIZING SACCADÉ DIRECTEMENT DANS LES CASES CAMÉRA
-        function triggerInlineLoader(id) {
+        // 1. DYNAMIQUE DE LA GRILLE : Bloquée à 95% tant que la vidéo ne tourne pas physiquement
+        function setupGridVideoWithTrueEvent(id) {
             const fill = document.getElementById(`inline-fill-${id}`);
             const loader = document.getElementById(`inline-loader-${id}`);
             const video = document.getElementById(`cam-vid-${id}`);
             
             if (!fill || !loader || !video) return;
 
-            // Avancée saccadée style vieux serveur
-            setTimeout(() => { fill.style.width = '20%'; }, 50 + (id * 40));
-            setTimeout(() => { fill.style.width = '25%'; }, 300 + (id * 20));
-            setTimeout(() => { fill.style.width = '70%'; }, 550 + (id * 50));
+            // Début de la fausse progression saccadée
+            setTimeout(() => { fill.style.width = '30%'; }, 100);
+            setTimeout(() => { fill.style.width = '65%'; }, 350);
             setTimeout(() => { 
-                fill.style.width = '100%'; 
-                
-                // Dès que les 100% sont atteints, on dégage le loader et on lance la vidéo
+                fill.style.width = '95%'; // On bloque la barre ici exprès en attente du stream
+            }, 600);
+
+            // ÉVÉNEMENT HISTORIQUE : Déclenché UNIQUEMENT quand le flux vidéo tourne en vrai
+            video.onplaying = function() {
+                fill.style.width = '100%'; // On libère la barre
                 setTimeout(() => {
-                    loader.style.display = 'none';
-                    video.style.display = 'block';
-                    video.load();
-                    video.play().catch(() => {});
+                    loader.style.display = 'none'; // On retire le loader
+                    video.style.opacity = '1';     // On affiche l'image
                 }, 150);
-            }, 900 + (id * 30));
+            };
+
+            // Initialisation forcée
+            video.load();
+            video.play().catch(() => {
+                // Sécurité mobile (si l'OS bloque l'autoplay sans clic, on libère le loader au bout de 2s pour pas bloquer)
+                setTimeout(() => {
+                    if (loader.style.display !== 'none') {
+                        fill.style.width = '100%';
+                        loader.style.display = 'none';
+                        video.style.opacity = '1';
+                    }
+                }, 2000);
+            });
         }
 
-        // DOUBLE CLIC / OPEN AVEC LE DECRYPTION INTERNE À LA POPUP
+        // 2. DYNAMIQUE DE LA MODALE : Bloquée à 95% jusqu'à ce que la vidéo soit prête dans le popup
         function openVideo(element) {
             const targetVideo = element.querySelector('video');
             const src = targetVideo.src;
             const labelText = element.querySelector('.cam-label').innerText;
-            
+
             videoOverlay.style.display = 'block';
             videoModal.style.display = 'block';
             
@@ -331,26 +347,38 @@
             modalLoaderContainer.style.display = 'block';
             modalFill.style.width = '0%';
             
-            // Progression brute
-            setTimeout(() => { modalFill.style.width = '15%'; }, 80);
-            setTimeout(() => { modalFill.style.width = '18%'; }, 450); 
-            setTimeout(() => { modalFill.style.width = '62%'; }, 600); 
-            setTimeout(() => { modalFill.style.width = '67%'; }, 900); 
+            // Progression saccadée initiale
+            setTimeout(() => { modalFill.style.width = '20%'; }, 80);
+            setTimeout(() => { modalFill.style.width = '55%'; }, 250); 
             setTimeout(() => { 
-                modalFill.style.width = '100%'; 
+                modalFill.style.width = '95%'; // Blocage tactique à 95%
+            }, 500); 
+
+            // ÉVÉNEMENT DE RENDU : Déclenché quand le buffer mobile a chargé assez de données pour afficher l'image
+            modalVideo.onplaying = function() {
+                modalFill.style.width = '100%'; // Libération immédiate
                 
                 setTimeout(() => {
                     modalLoaderContainer.style.display = 'none';
-                    modalVideo.src = src;
-                    modalLabel.innerText = labelText;
-                    
                     modalVideo.style.display = 'block';
                     modalLabel.style.display = 'block';
-                    
-                    modalVideo.load();
-                    modalVideo.play().catch(() => {});
                 }, 150);
-            }, 1150);
+            };
+
+            // Injection et décryptage forcé
+            modalVideo.src = src;
+            modalVideo.load();
+            modalVideo.play().catch(() => {
+                // Sécurité bypass mobile extrême (si l'OS exige un clic physique à l'intérieur de la modale)
+                setTimeout(() => {
+                    if (modalLoaderContainer.style.display !== 'none') {
+                        modalFill.style.width = '100%';
+                        modalLoaderContainer.style.display = 'none';
+                        modalVideo.style.display = 'block';
+                        modalLabel.style.display = 'block';
+                    }
+                }, 1500);
+            });
         }
 
         videoOverlay.addEventListener('click', () => {
