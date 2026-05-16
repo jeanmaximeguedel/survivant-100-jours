@@ -5,6 +5,7 @@
     <title>S_F_PROTOCOL_100 // SURVIVANT</title>
     <style>
         :root { --neon: #00ff41; --bg: #0a0a0a; --gps-purple: #8338ec; }
+        /* CORRECTION : Le scroll vertical est libéré */
         body { background: var(--bg); color: var(--neon); font-family: monospace; margin: 0; text-transform: uppercase; }
         
         #header { display: flex; justify-content: space-between; padding: 20px; border-bottom: 2px solid var(--neon); }
@@ -19,13 +20,11 @@
             overflow: hidden;
         }
 
-        /* RECALAGE DRASTIQUE SUR LE BLOCK 8 */
         #gps-marker {
             position: absolute; 
             width: 18px; height: 18px;
             background: var(--gps-purple); 
             border-radius: 50%;
-            /* On réduit le 'left' pour le sortir de la zone noire */
             top: 78%; 
             left: 58%;
             transform: translate(-50%, -50%);
@@ -53,35 +52,96 @@
         .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; }
         video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; }
+        
         #rules { padding: 20px; color: #aaa; font-size: 0.85rem; border-top: 1px solid #222; }
+
+        .matrix-cursor {
+            color: var(--neon);
+            font-weight: bold;
+            animation: flash 1.2s infinite;
+            margin-left: 2px;
+        }
+        @keyframes flash { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+        .flex-footer { display: flex; justify-content: space-between; gap: 20px; width: 100%; }
+        .footer-left { flex: 1; text-align: left; }
+        .footer-right { flex: 1; text-align: right; }
+
+        @media (max-width: 768px) {
+            .cam-grid { grid-template-columns: repeat(2, 1fr); }
+            .flex-footer { flex-direction: column; gap: 20px; }
+            .footer-left { order: 1; }
+            .footer-right { text-align: left; order: 2; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="header">
-        <div>> SURVIVANT_001<br>> STATUS: EN ATTENTE</div>
-        <div style="text-align: right;">DÉBUT PROTOCOLE : 22/05/2026<br><span id="clock">00:00:00:00</span></div>
+    <div id="main-content">
+        <div id="header">
+            <div>> SURVIVANT_001<br>> STATUS: EN ATTENTE</div>
+            <div style="text-align: right;">DÉBUT PROTOCOLE : 22/05/2026<br><span id="clock">00:00:00:00</span></div>
+        </div>
+
+        <div id="radar-box">
+            <div id="gps-marker"></div>
+        </div>
+
+        <div class="cam-grid">
+            <div class="cam-container"><div class="cam-label">CAM_01 // NEF_SUD</div><video src="cam1.mp4" autoplay muted loop playsinline></video></div>
+            <div class="cam-container"><div class="cam-label">CAM_02 // CREATE_B3</div><video src="cam2.mp4" autoplay muted loop playsinline></video></div>
+            <div class="cam-container"><div class="cam-label">CAM_03 // CHILL_ZONE</div><video src="cam3.mp4" autoplay muted loop playsinline></video></div>
+            <div class="cam-container"><div class="cam-label">CAM_04 // TWITCH_STREAM</div><video src="cam4.mp4" autoplay muted loop playsinline></video></div>
+        </div>
+
+        <div id="rules">
+            <div class="flex-footer">
+                <div class="footer-left">
+                    <h3 style="color:var(--neon); margin-top:0; font-size: 0.95rem;">> S'INSCRIRE POUR CONNAITRE LES PROCHAINES INSTRUCTIONS</h3>
+                    <form onsubmit="triggerMatrixMelt(event)" style="display: flex; align-items: center; margin-top: 10px;">
+                        <span style="color: var(--neon); font-size: 16px; font-weight: bold; white-space: nowrap;">mail : </span>
+                        <div style="position: relative; display: flex; align-items: center; min-width: 250px; margin-left: 5px; cursor: text;" onclick="document.getElementById('subscriber-email').focus()">
+                            <span id="typed-email" style="color: var(--neon); font-size: 16px; white-space: pre; font-family: monospace;"></span><span class="matrix-cursor">/</span>
+                            <input type="email" id="subscriber-email" required autocomplete="off" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent; font-family: monospace; font-size: 16px;">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="footer-right">
+                    <h3 style="color:var(--neon); margin-top:0;">[PARAMÈTRES DE SURVIE]</h3>
+                    - 100 JOURS SANS SORTIR DE STATION F.<br>
+                    - EQUIPEMENT : 0 unité.
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div id="radar-box">
-        <div id="gps-marker"></div>
-    </div>
-
-    <div class="cam-grid">
-        <div class="cam-container"><div class="cam-label">CAM_01 // NEF_SUD</div><video src="cam1.mp4" autoplay muted loop playsinline></video></div>
-        <div class="cam-container"><div class="cam-label">CAM_02 // CREATE_B3</div><video src="cam2.mp4" autoplay muted loop playsinline></video></div>
-        <div class="cam-container"><div class="cam-label">CAM_03 // CHILL_ZONE</div><video src="cam3.mp4" autoplay muted loop playsinline></video></div>
-        <div class="cam-container"><div class="cam-label">CAM_04 // TWITCH_STREAM</div><video src="cam4.mp4" autoplay muted loop playsinline></video></div>
-    </div>
-
-    <div id="rules">
-        <h3 style="color:var(--neon); margin-top:0;">[PARAMÈTRES DE SURVIE]</h3>
-        - 100 JOURS SANS SORTIR DE STATION F.<br>
-        - EQUIPEMENT : 0 unité.
-    </div>
+    <canvas id="matrix-canvas" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: #000;"></canvas>
 
     <script>
+        let backClickCount = 0;
+
+        try {
+            if (localStorage.getItem('survivor_registered') === 'true') {
+                showWaitingScreen();
+            }
+        } catch (e) {
+            console.warn("Sécurité locale active.");
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const emailInput = document.getElementById('subscriber-email');
+            const typedEmailSpan = document.getElementById('typed-email');
+            if (emailInput && typedEmailSpan) {
+                emailInput.addEventListener('input', (e) => {
+                    typedEmailSpan.textContent = e.target.value;
+                });
+            }
+        });
+
         function update() {
+            const clockEl = document.getElementById("clock");
+            if (!clockEl) return;
             const target = new Date("May 22, 2026 00:00:00").getTime();
             const now = new Date().getTime();
             const diff = target - now;
@@ -89,10 +149,96 @@
             const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((diff % (1000 * 60)) / 1000);
-            document.getElementById("clock").innerHTML = d + "J : " + h + "H : " + m + "M : " + s + "S";
+            clockEl.innerHTML = d + "J : " + h + "H : " + m + "M : " + s + "S";
         }
         setInterval(update, 1000);
         update();
+
+        // CAPTURE EMAIL (WEB3FORMS) + ANIMATION
+        function triggerMatrixMelt(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('subscriber-email');
+            if (!emailInput || !emailInput.value) return;
+
+            const emailValue = emailInput.value;
+
+            fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                body: JSON.stringify({
+                    access_key: "d36b83ff-b67a-42bc-9142-871294ee312e",
+                    email: emailValue,
+                    subject: "NOUVEAU SURVIVANT INSCRIT",
+                    from_name: "Terminal Protocol 100"
+                })
+            })
+            .then(res => console.log("Données transmises."))
+            .catch(err => console.error("Erreur transmission:", err));
+
+            const canvas = document.getElementById('matrix-canvas');
+            canvas.style.display = 'block';
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ日ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ".split("");
+            const fontSize = 16;
+            const columns = canvas.width / fontSize;
+            const rainDrops = Array(Math.floor(columns)).fill(1);
+
+            const matrixInterval = setInterval(() => {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#00ff41';
+                ctx.font = fontSize + 'px monospace';
+
+                for (let i = 0; i < rainDrops.length; i++) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                    
+                    if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        rainDrops[i] = 0;
+                    }
+                    rainDrops[i]++;
+                }
+            }, 30);
+
+            setTimeout(() => {
+                clearInterval(matrixInterval);
+                try {
+                    localStorage.setItem('survivor_registered', 'true');
+                } catch(e) {}
+                showWaitingScreen();
+            }, 4000);
+        }
+
+        function handleBackClick() {
+            backClickCount++;
+            const errEl = document.getElementById('back-error');
+            
+            if (backClickCount < 3) {
+                if (errEl) {
+                    errEl.innerHTML = `> ERROR_0x445: ACCESS_DENIED. DECRYPTION_FAILED (ATTEMPT ${backClickCount}/3).`;
+                }
+            } else {
+                try {
+                    localStorage.removeItem('survivor_registered');
+                } catch(e) {}
+                window.location.reload();
+            }
+        }
+
+        function showWaitingScreen() {
+            document.body.innerHTML = `
+                <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:#000; color:#00ff41; font-family:monospace; font-size:22px; letter-spacing:2px; text-align:center; padding:20px; box-sizing:border-box;">
+                    <div style="margin-bottom: 20px;">> WAITING TO LOAD THE PROCESS<span class="matrix-cursor">/</span></div>
+                    <div id="back-error" style="color: #ff3333; font-size: 14px; min-height: 20px; margin-bottom: 30px; letter-spacing: 1px; font-weight: bold;"></div>
+                    <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:monospace; padding:10px 20px; cursor:pointer; font-size:14px; text-transform:uppercase; letter-spacing:2px; transition: all 0.3s;">[ BACK ]</button>
+                </div>
+            `;
+        }
     </script>
 </body>
 </html>
