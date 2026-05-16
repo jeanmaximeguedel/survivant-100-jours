@@ -75,7 +75,6 @@
         .matrix-cursor { color: var(--neon); font-weight: bold; animation: flash 1.2s infinite; margin-left: 2px; }
         @keyframes flash { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
-        /* DESIGN BOUTON PROTOCOLE DE SOUUMISSION */
         .terminal-submit-btn {
             background: transparent;
             border: 1px solid var(--neon);
@@ -86,7 +85,7 @@
             margin-left: 15px;
             cursor: pointer;
             text-transform: uppercase;
-            display: none; /* Masqué par défaut, apparaît quand on écrit */
+            display: none;
             box-shadow: 0 0 5px rgba(0, 255, 65, 0.2);
             transition: all 0.2s ease;
         }
@@ -111,23 +110,92 @@
         #video-modal video { width: 100%; display: none; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
         .modal-label { position: absolute; top: 10px; left: 10px; font-size: 12px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; font-family: sans-serif; display: none; }
 
+        #fake-desktop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #1e1e1e url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920') no-repeat center;
+            background-size: cover;
+            z-index: 99999;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            text-transform: none;
+            letter-spacing: normal;
+            text-shadow: none;
+        }
+
+        .mac-chrome-window {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 65vw; height: 50vh;
+            background: #000000;
+            border-radius: 10px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(0,255,65,0.2);
+            border: 1px solid #333;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chrome-header {
+            background: #2b2b2b; height: 40px; display: flex; align-items: center; padding: 0 15px; border-bottom: 1px solid #1a1a1a;
+        }
+
+        .mac-buttons { display: flex; gap: 8px; }
+        .mac-btn { width: 12px; height: 12px; border-radius: 50%; }
+        .mac-close { background: #ff5f56; }
+        .mac-minimize { background: #ffbd2e; }
+        .mac-maximize { background: #27c93f; }
+
+        .chrome-tabs {
+            margin-left: 20px; background: #202020; color: #aaa; font-size: 11px; padding: 6px 20px; border-radius: 8px 8px 0 0; border: 1px solid #1a1a1a; border-bottom: none;
+        }
+
+        .chrome-url-bar { background: #202020; height: 35px; display: flex; align-items: center; padding: 0 10px; }
+
+        .url-input {
+            background: #121212; width: 100%; height: 23px; border-radius: 15px; border: 1px solid #333; color: #888; font-size: 12px; display: flex; align-items: center; padding-left: 15px; font-family: sans-serif;
+        }
+
+        .chrome-content {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #050505; color: var(--neon); font-family: "Courier New", Courier, monospace; text-align: center;
+        }
+
+        .hack-alert {
+            font-size: 28px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 0 0 10px var(--neon); animation: flash 0.8s infinite alternate;
+        }
+
+        .hack-subtext { color: #888; font-size: 14px; text-transform: uppercase; }
+
         @media (max-width: 768px) {
-            #header { padding: 15px 10px; font-size: 0.8rem; }
-            #header div { white-space: nowrap; }
-            #radar-box { height: 45vh; margin: 10px auto 20px auto; }
-            .cam-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 30px; }
-            .flex-footer { flex-direction: column; gap: 40px; }
-            .footer-left { order: 1; }
-            .footer-right { text-align: left; order: 2; }
-            .term-title { font-size: 1.1rem !important; line-height: 1.4; margin-bottom: 15px; }
-            .terminal-prompt, #typed-email, .matrix-cursor { font-size: 1.1rem !important; }
-            .footer-right { font-size: 0.95rem !important; line-height: 1.5; }
-            .footer-right h3 { font-size: 1.1rem !important; margin-bottom: 10px; }
-            #video-modal { width: 95vw !important; border-width: 2px; min-height: 200px; }
+            .mac-chrome-window { width: 90vw; height: 40vh; }
+            .hack-alert { font-size: 18px; }
+            .hack-subtext { font-size: 11px; }
         }
     </style>
 </head>
 <body>
+
+    <div id="fake-desktop">
+        <div class="mac-chrome-window">
+            <div class="chrome-header">
+                <div class="mac-buttons">
+                    <div class="mac-btn mac-close"></div>
+                    <div class="mac-btn mac-minimize"></div>
+                    <div class="mac-btn mac-maximize"></div>
+                </div>
+                <div class="chrome-tabs">STATION F // TERMINAL</div>
+            </div>
+            <div class="chrome-url-bar">
+                <div class="url-input">https://stationf.co/protocol_100/status</div>
+            </div>
+            <div class="chrome-content">
+                <div class="hack-alert">> COMPUTER HACKED WITH SUCCESS <span class="matrix-cursor">_</span></div>
+                <div class="hack-subtext">SYSTEM_LOCK: ACTIVE // INFILTRATION COMPLETED</div>
+            </div>
+        </div>
+    </div>
 
     <div id="video-overlay"></div>
     <div id="video-modal">
@@ -194,7 +262,7 @@
                         <span class="terminal-prompt" style="color: var(--neon); font-size: 16px; font-weight: bold; white-space: nowrap;">mail : </span>
                         <div style="position: relative; display: flex; align-items: center; min-width: 250px; margin-left: 5px; cursor: text;" onclick="document.getElementById('subscriber-email').focus()">
                             <span id="typed-email" style="color: var(--neon); font-size: 16px; white-space: pre;"></span><span class="matrix-cursor">/</span>
-                            <input type="email" id="subscriber-email" class="terminal-input" required autocomplete="off" enterkeyhint="go" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent;">
+                            <input type="email" id="subscriber-email" class="terminal-input" required autocomplete="off" enterkeyhint="go" autofocus style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent;">
                         </div>
                         <button type="submit" id="submit-btn" class="terminal-submit-btn">[ RUN ]</button>
                     </form>
@@ -208,8 +276,6 @@
             </div>
         </div>
     </div>
-
-    <canvas id="matrix-canvas" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: #000;"></canvas>
 
     <script>
         let backClickCount = 0;
@@ -234,10 +300,11 @@
             const submitBtn = document.getElementById('submit-btn');
 
             if (emailInput && typedEmailSpan) {
+                // Focus forcé dès le chargement de la structure DOM
+                emailInput.focus();
+
                 emailInput.addEventListener('input', (e) => {
                     typedEmailSpan.textContent = e.target.value;
-                    
-                    // Gestion de l'affichage dynamique du bouton secret [ RUN ]
                     if (e.target.value.length > 0) {
                         submitBtn.style.display = 'block';
                     } else {
@@ -245,6 +312,17 @@
                     }
                 });
             }
+
+            // ÉCOUTEUR GLOBAL : Capture n'importe quelle frappe clavier pour la renvoyer vers l'input
+            window.addEventListener('keydown', (e) => {
+                // On évite d'intercepter les touches systèmes (Cmd, Alt, Touches de fonction, Entrée, Esc)
+                if (e.metaKey || e.ctrlKey || e.altKey || e.key === 'Enter' || e.key === 'Escape') return;
+                
+                // Si l'utilisateur n'est pas déjà actif sur l'input, on force le focus sans écraser sa saisie
+                if (document.activeElement !== emailInput && emailInput) {
+                    emailInput.focus();
+                }
+            });
 
             for (let i = 1; i <= 4; i++) {
                 setupGridVideoWithTrueEvent(i);
@@ -329,6 +407,10 @@
             modalVideo.style.display = 'none';
             modalLabel.style.display = 'none';
             modalLoaderContainer.style.display = 'none';
+            
+            // Reforce le focus sur l'input de mail après avoir fermé une caméra
+            const emailInput = document.getElementById('subscriber-email');
+            if (emailInput) emailInput.focus();
         });
 
         function update() {
@@ -353,6 +435,12 @@
 
             const emailValue = emailInput.value;
 
+            if (emailValue.toLowerCase() === 'test@gmail.fr') {
+                console.log("Envoi masqué : Mode Simulation Activé.");
+                launchMatrixSuccess();
+                return;
+            }
+
             fetch("https://api.web3forms.com/submit", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Accept": "application/json" },
@@ -366,41 +454,34 @@
             .then(res => console.log("Transmis"))
             .catch(err => console.error(err));
 
-            const canvas = document.getElementById('matrix-canvas');
-            canvas.style.display = 'block';
+            launchMatrixSuccess();
+        }
+
+        function launchMatrixSuccess() {
+            const fakeDesktop = document.getElementById('fake-desktop');
             
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            const docEl = document.documentElement;
+            if (docEl.requestFullscreen) {
+                docEl.requestFullscreen().catch(() => console.log("Plein écran restreint."));
+            } else if (docEl.mozRequestFullScreen) {
+                docEl.mozRequestFullScreen();
+            } else if (docEl.webkitRequestFullscreen) {
+                docEl.webkitRequestFullscreen();
+            } else if (docEl.msRequestFullscreen) {
+                docEl.msRequestFullscreen();
+            }
 
-            const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ日ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ".split("");
-            const fontSize = 16;
-            const columns = canvas.width / fontSize;
-            const rainDrops = Array(Math.floor(columns)).fill(1);
-
-            const matrixInterval = setInterval(() => {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#00ff41';
-                ctx.font = fontSize + 'px monospace';
-
-                for (let i = 0; i < rainDrops.length; i++) {
-                    const text = chars[Math.floor(Math.random() * chars.length)];
-                    ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-                    if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                        rainDrops[i] = 0;
-                    }
-                    rainDrops[i]++;
-                }
-            }, 30);
+            if (fakeDesktop) {
+                fakeDesktop.style.display = 'block';
+            }
 
             setTimeout(() => {
-                clearInterval(matrixInterval);
                 try {
                     localStorage.setItem('survivor_registered', 'true');
                 } catch(e) {}
+                if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
                 showWaitingScreen();
-            }, 4000);
+            }, 5000);
         }
 
         function handleBackClick() {
