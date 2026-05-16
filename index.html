@@ -86,12 +86,40 @@
             .footer-left { order: 1; }
             .footer-right { text-align: left; order: 2; }
             
-            /* Amélioration de la lisibilité des instructions sur mobile */
-            .footer-right { font-size: 1.15rem; line-height: 1.6; }
-            .footer-right h3 { font-size: 1.3rem !important; }
+            /* --- MODIFICATIONS INTÉGRÉES ICI --- */
+
+            /* 1. Ajustement du point (un peu plus haut, un peu plus à droite) */
+            #gps-marker {
+                top: 70%;  /* Était à 78% (diminuer pour monter) */
+                left: 65%; /* Était à 58% (augmenter pour aller à droite) */
+            }
+
+            /* 2. Vidéo modale (Agrandie x2 par rapport à sa taille de base sur mobile) */
+            #video-modal { 
+                width: 90vw; 
+                /* On combine le translate obligatoire pour le centrage avec un scale pour l'agrandir */
+                transform: translate(-50%, -50%) scale(1.5); 
+            }
+
+            /* 3. Augmentation massive de la taille des mots (Haut et Bas) */
+            #header { 
+                font-size: 1.5em; /* Agrandit le bloc header entier */
+                flex-direction: column; /* Empile les infos pour éviter que le texte ne déborde */
+                align-items: center;
+                text-align: center;
+                gap: 15px;
+            }
+            #header div { text-align: center !important; }
             
-            /* La vidéo prend 90% de la largeur sur mobile pour être visible */
-            #video-modal { width: 90vw; }
+            /* Textes du bas */
+            .footer-right { font-size: 2.2rem; line-height: 1.6; }
+            .footer-right h3 { font-size: 2.5rem !important; }
+            
+            .footer-left h3 { font-size: 2.5rem !important; line-height: 1.4; }
+            .footer-left span { font-size: 2.2rem !important; }
+            .footer-left input { font-size: 2.2rem !important; }
+            
+            #typed-email { font-size: 2.2rem !important; }
         }
     </style>
 </head>
