@@ -58,7 +58,9 @@
         }
         @keyframes ripple { 0% { width: 14px; height: 14px; opacity: 1; } 100% { width: 100px; height: 100px; opacity: 0; } }
 
-        .cam-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 15px; margin-bottom: 25px; }
+        .cam-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 15px; margin-bottom: 25px; }
+        @media (min-width: 769px) { .cam-grid { grid-template-columns: repeat(4, 1fr); } }
+        
         .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; cursor: pointer; transition: border-color 0.3s; }
         .cam-container:hover { border-color: var(--neon); }
         
@@ -76,139 +78,106 @@
         @keyframes flash { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
         .terminal-submit-btn {
-            background: transparent;
-            border: 1px solid var(--neon);
-            color: var(--neon);
-            font-family: "Courier New", Courier, monospace;
-            font-size: 11px;
-            padding: 3px 8px;
-            margin-left: 15px;
-            cursor: pointer;
-            text-transform: uppercase;
-            display: none;
-            box-shadow: 0 0 5px rgba(0, 255, 65, 0.2);
-            transition: all 0.2s ease;
+            background: transparent; border: 1px solid var(--neon); color: var(--neon);
+            font-family: "Courier New", Courier, monospace; font-size: 11px; padding: 3px 8px;
+            margin-left: 15px; cursor: pointer; text-transform: uppercase; display: none;
+            box-shadow: 0 0 5px rgba(0, 255, 65, 0.2); transition: all 0.2s ease;
         }
-        .terminal-submit-btn:active {
-            background: var(--neon);
-            color: #000;
-            box-shadow: 0 0 15px var(--neon);
-        }
+        .terminal-submit-btn:active { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
 
-        .flex-footer { display: flex; justify-content: space-between; gap: 40px; width: 100%; }
+        .flex-footer { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        @media (min-width: 769px) { .flex-footer { flex-direction: row; justify-content: space-between; gap: 40px; } }
         .footer-left { flex: 1; text-align: left; }
-        .footer-right { flex: 1; text-align: right; }
+        .footer-right { flex: 1; text-align: left; }
+        @media (min-width: 769px) { .footer-right { text-align: right; } }
 
         #video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer; }
-        #video-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 33vw; border: 2px solid var(--neon); box-shadow: 0 0 40px rgba(0, 255, 65, 0.3); z-index: 8001; background: #000; pointer-events: none; min-height: 250px; }
+        #video-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85vw; border: 2px solid var(--neon); box-shadow: 0 0 40px rgba(0, 255, 65, 0.3); z-index: 8001; background: #000; pointer-events: none; min-height: 180px; }
+        @media (min-width: 769px) { #video-modal { width: 33vw; min-height: 250px; } }
         
         #modal-loader-container { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 75%; text-align: center; }
-        .modal-loader-text { font-size: 14px; margin-bottom: 15px; letter-spacing: 0.5px; }
+        .modal-loader-text { font-size: 12px; margin-bottom: 15px; letter-spacing: 0.5px; }
         .modal-bar-bg { border: 2px solid var(--neon); height: 24px; width: 100%; padding: 3px; box-sizing: border-box; background: #000; }
         .modal-bar-fill { height: 100%; background: var(--neon); width: 0%; transition: width 0.1s linear; }
 
         #video-modal video { width: 100%; display: none; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
-        .modal-label { position: absolute; top: 10px; left: 10px; font-size: 12px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; font-family: sans-serif; display: none; }
+        .modal-label { position: absolute; top: 10px; left: 10px; font-size: 11px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; font-family: sans-serif; display: none; }
 
-        /* ÉCRAN DE FAUX HACK EN PLEIN ÉCRAN - FIABILISÉ ET ADAPTÉ MOBILE */
+        /* SIMULATION HACK MOBILE ET CREDIBLE */
         #fake-desktop {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background: #1e1e1e url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920') no-repeat center;
-            background-size: cover;
-            z-index: 999999; /* Forçage au-dessus absolu de l'OS */
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000; z-index: 99999; overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            text-transform: none;
-            letter-spacing: normal;
-            text-shadow: none;
+            text-transform: none; letter-spacing: normal; text-shadow: none;
         }
 
-        .mac-chrome-window {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 65vw; height: 50vh;
-            background: #000000;
-            border-radius: 10px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(0,255,65,0.2);
-            border: 1px solid #333;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+        /* Faux écran de verrouillage Smartphone */
+        #phone-lockscreen {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000') no-repeat center;
+            background-size: cover; display: flex; flex-direction: column; justify-content: space-between;
+            align-items: center; padding: 60px 30px; box-sizing: border-box; color: #fff; z-index: 2;
+        }
+        .phone-time { font-size: 72px; font-weight: 200; margin-bottom: 5px; }
+        .phone-date { font-size: 18px; font-weight: 400; opacity: 0.9; }
+        .phone-notif {
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            width: 100%; max-width: 340px; padding: 15px; border-radius: 18px; margin-top: 40px;
+            box-sizing: border-box; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .phone-notif-title { font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; opacity: 0.6; margin-bottom: 4px;}
+        .phone-notif-body { font-size: 14px; font-weight: 500; color: #fff; }
+
+        /* Effet Glitch & Console de Hack par dessus */
+        #terminal-overlay {
+            display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.92);
+            z-index: 3; padding: 20px; font-family: "Courier New", monospace; color: var(--neon);
+            font-size: 11px; line-height: 1.4; overflow: hidden; word-break: break-all;
         }
 
-        .chrome-header {
-            background: #2b2b2b; height: 40px; display: flex; align-items: center; padding: 0 15px; border-bottom: 1px solid #1a1a1a;
+        .system-alert-box {
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            width: 85%; max-width: 310px; background: #000; border: 2px solid var(--neon);
+            padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(0,255,65,0.4); z-index: 4; display: none;
         }
 
-        .mac-buttons { display: flex; gap: 8px; }
-        .mac-btn { width: 12px; height: 12px; border-radius: 50%; }
-        .mac-close { background: #ff5f56; }
-        .mac-minimize { background: #ffbd2e; }
-        .mac-maximize { background: #27c93f; }
-
-        .chrome-tabs {
-            margin-left: 20px; background: #202020; color: #aaa; font-size: 11px; padding: 6px 20px; border-radius: 8px 8px 0 0; border: 1px solid #1a1a1a; border-bottom: none;
+        @keyframes glitch-anim {
+            0% { clip-path: inset(40% 0 61% 0); transform: skew(0.3deg); }
+            20% { clip-path: inset(92% 0 1% 0); transform: skew(-0.5deg); }
+            40% { clip-path: inset(15% 0 80% 0); transform: skew(0.5deg); }
+            60% { clip-path: inset(80% 0 5% 0); transform: skew(-0.3deg); }
+            80% { clip-path: inset(3% 0 92% 0); transform: skew(0.8deg); }
+            100% { clip-path: inset(40% 0 61% 0); transform: skew(0deg); }
         }
-
-        .chrome-url-bar { background: #202020; height: 35px; display: flex; align-items: center; padding: 0 10px; }
-
-        .url-input {
-            background: #121212; width: 100%; height: 23px; border-radius: 15px; border: 1px solid #333; color: #888; font-size: 12px; display: flex; align-items: center; padding-left: 15px; font-family: sans-serif;
-        }
-
-        .chrome-content {
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #050505; color: var(--neon); font-family: "Courier New", Courier, monospace; text-align: center;
-        }
-
-        .hack-alert {
-            font-size: 28px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; text-shadow: 0 0 10px var(--neon); animation: flash 0.8s infinite alternate;
-        }
-
-        .hack-subtext { color: #888; font-size: 14px; text-transform: uppercase; }
-
-        @media (max-width: 768px) {
-            #header { padding: 15px 10px; font-size: 0.8rem; }
-            #header div { white-space: nowrap; }
-            #radar-box { height: 45vh; margin: 10px auto 20px auto; }
-            .cam-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 30px; }
-            .flex-footer { flex-direction: column; gap: 40px; }
-            .footer-left { order: 1; }
-            .footer-right { text-align: left; order: 2; }
-            .term-title { font-size: 1.1rem !important; line-height: 1.4; margin-bottom: 15px; }
-            .terminal-prompt, #typed-email, .matrix-cursor { font-size: 1.1rem !important; }
-            .footer-right { font-size: 0.95rem !important; line-height: 1.5; }
-            .footer-right h3 { font-size: 1.1rem !important; margin-bottom: 10px; }
-            #video-modal { width: 95vw !important; border-width: 2px; min-height: 200px; }
-            
-            /* Ajustements Fausse Fenêtre pour la taille Mobile */
-            .mac-chrome-window { width: 90vw; height: 40vh; }
-            .hack-alert { font-size: 16px; letter-spacing: 1px; }
-            .hack-subtext { font-size: 10px; }
-        }
+        .glitching { animation: glitch-anim 0.2s linear infinite; filter: hue-rotate(90deg) saturate(3); }
     </style>
 </head>
 <body>
 
+    <!-- INTERFACE DE SIMULATION EN AVANT PLAN -->
     <div id="fake-desktop">
-        <div class="mac-chrome-window">
-            <div class="chrome-header">
-                <div class="mac-buttons">
-                    <div class="mac-btn mac-close"></div>
-                    <div class="mac-btn mac-minimize"></div>
-                    <div class="mac-btn mac-maximize"></div>
+        <!-- Étape 1 : Faux Écran Mobile -->
+        <div id="phone-lockscreen">
+            <div style="text-align: center;">
+                <div class="phone-time" id="lock-time">15:03</div>
+                <div class="phone-date">Samedi 16 mai</div>
+                
+                <div class="phone-notif">
+                    <div class="phone-notif-title"><span>⚙️ SYSTÈME</span><span>à l'instant</span></div>
+                    <div class="phone-notif-body">Mise à jour de sécurité requise.</div>
                 </div>
-                <div class="chrome-tabs">STATION F // TERMINAL</div>
             </div>
-            <div class="chrome-url-bar">
-                <div class="url-input">https://stationf.co/protocol_100/status</div>
-            </div>
-            <div class="chrome-content">
-                <div class="hack-alert">> COMPUTER HACKED WITH SUCCESS <span class="matrix-cursor">_</span></div>
-                <div class="hack-subtext">SYSTEM_LOCK: ACTIVE // INFILTRATION COMPLETED</div>
-            </div>
+            <div style="font-size: 13px; opacity: 0.6; font-weight: 500; letter-spacing: 0.3px;">▲ Balayer vers le haut pour déverrouiller</div>
+        </div>
+
+        <!-- Étape 2 : Console d'injection de scripts -->
+        <div id="terminal-overlay"></div>
+
+        <!-- Étape 3 : Alerte de Verrouillage final -->
+        <div class="system-alert-box" id="hack-alert-box">
+            <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px;">> CORE_HACKED <</div>
+            <div style="color: #fff; font-size: 12px; margin-bottom: 15px;">INFILTRATION COMPLETED // SYSTEM_LOCK: ACTIVE</div>
+            <div style="font-size: 10px; color: #888;">BYPASS_PROTOCOL_100 (100%)</div>
         </div>
     </div>
 
@@ -275,7 +244,7 @@
                     <h3 class="term-title" style="color:var(--neon); margin-top:0;">> S'INSCRIRE POUR CONNAITRE LES PROCHAINES INSTRUCTIONS</h3>
                     <form onsubmit="triggerMatrixMelt(event)" style="display: flex; align-items: center; margin-top: 10px;">
                         <span class="terminal-prompt" style="color: var(--neon); font-size: 16px; font-weight: bold; white-space: nowrap;">mail : </span>
-                        <div style="position: relative; display: flex; align-items: center; min-width: 250px; margin-left: 5px; cursor: text;" onclick="document.getElementById('subscriber-email').focus()">
+                        <div style="position: relative; display: flex; align-items: center; min-width: 220px; margin-left: 5px; cursor: text;" onclick="document.getElementById('subscriber-email').focus()">
                             <span id="typed-email" style="color: var(--neon); font-size: 16px; white-space: pre;"></span><span class="matrix-cursor">/</span>
                             <input type="email" id="subscriber-email" class="terminal-input" required autocomplete="off" enterkeyhint="go" autofocus style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent;">
                         </div>
@@ -303,6 +272,16 @@
         const modalLoaderContainer = document.getElementById('modal-loader-container');
         const modalFill = document.getElementById('modal-fill');
 
+        // Mettre à l'heure le faux écran lockscreen mobile
+        function syncLockClock() {
+            const now = new Date();
+            const hr = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            const el = document.getElementById('lock-time');
+            if (el) el.textContent = `${hr}:${min}`;
+        }
+        syncLockClock();
+
         try {
             if (localStorage.getItem('survivor_registered') === 'true') {
                 showWaitingScreen();
@@ -316,20 +295,13 @@
 
             if (emailInput && typedEmailSpan) {
                 emailInput.focus();
-
                 emailInput.addEventListener('input', (e) => {
                     typedEmailSpan.textContent = e.target.value;
-                    if (e.target.value.length > 0) {
-                        submitBtn.style.display = 'block';
-                    } else {
-                        submitBtn.style.display = 'none';
-                    }
+                    submitBtn.style.display = e.target.value.length > 0 ? 'block' : 'none';
                 });
             }
 
-            // Capture clavier globale active (uniquement sur desktop)
             window.addEventListener('keydown', (e) => {
-                if (window.innerWidth <= 768) return; // Désactivé sur mobile pour préserver le comportement tactile
                 if (e.metaKey || e.ctrlKey || e.altKey || e.key === 'Enter' || e.key === 'Escape') return;
                 if (document.activeElement !== emailInput && emailInput) {
                     emailInput.focus();
@@ -375,11 +347,9 @@
         function openVideo(element) {
             const targetVideo = element.querySelector('video');
             const src = targetVideo.src;
-            const labelText = element.querySelector('.cam-label').innerText;
 
             videoOverlay.style.display = 'block';
             videoModal.style.display = 'block';
-            
             modalVideo.style.display = 'none';
             modalLabel.style.display = 'none';
             modalLoaderContainer.style.display = 'block';
@@ -421,7 +391,7 @@
             modalLoaderContainer.style.display = 'none';
             
             const emailInput = document.getElementById('subscriber-email');
-            if (emailInput && window.innerWidth > 768) emailInput.focus();
+            if (emailInput) emailInput.focus();
         });
 
         function update() {
@@ -460,37 +430,64 @@
                     subject: "NOUVEAU SURVIVANT INSCRIT",
                     from_name: "Terminal Protocol 100"
                 })
-            })
-            .then(res => console.log("Transmis"))
-            .catch(err => console.error(err));
+            }).catch(err => console.error(err));
 
             launchMatrixSuccess();
         }
 
-        // DOUBLE COMPATIBILITÉ PLEIN ÉCRAN : NATIF SUR PC / CSS STRUCTURÉ SUR MOBILE
+        // ANIMATION CRÉDIBLE DE SIMULATION MOBILE
         function launchMatrixSuccess() {
             const fakeDesktop = document.getElementById('fake-desktop');
+            const lockscreen = document.getElementById('phone-lockscreen');
+            const terminal = document.getElementById('terminal-overlay');
+            const alertBox = document.getElementById('hack-alert-box');
             
-            // On tente le plein écran natif de sécurité (Valable PC / Mac / Android)
             const docEl = document.documentElement;
-            if (docEl.requestFullscreen) {
-                docEl.requestFullscreen().catch(() => {});
-            } else if (docEl.webkitRequestFullscreen) {
-                docEl.webkitRequestFullscreen();
-            }
+            if (docEl.requestFullscreen) { docEl.requestFullscreen().catch(() => {}); }
 
-            // Activation de la fausse interface système (Sur mobile, le z-index à 999999 fait l'effet d'un lock d'application)
-            if (fakeDesktop) {
-                fakeDesktop.style.display = 'block';
-            }
+            if (fakeDesktop) fakeDesktop.style.display = 'block';
 
+            // Phase 1 : Le téléphone glitch sévèrement (durée : 1.2s)
             setTimeout(() => {
-                try {
-                    localStorage.setItem('survivor_registered', 'true');
-                } catch(e) {}
+                lockscreen.classList.add('glitching');
+            }, 400);
+
+            // Phase 2 : Le système s'effondre et laisse place à la console brute de déchiffrage
+            setTimeout(() => {
+                lockscreen.style.display = 'none';
+                terminal.style.display = 'block';
+                
+                // Injection continue de fausses lignes de code cryptées à haute vitesse
+                const codes = [
+                    "STATION_F_CORE_BYPASS...", "CONNECTING TO LOCAL_HOST...", "SUCCEEDED.",
+                    "GRANTING ROOT_PRIVILEGES...", "WIPING SECURITY_LOGS...", "OK.",
+                    "OVERRIDING HARDWARE_ENCRYPTION...", "EXTRACTING TOKEN_ID...",
+                    "ANTENNA_CHIP_INJECT: OK", "GPS_LOCK_FORCED: TRUE", "CREATING S_F_BACKDOOR...",
+                    "PROTOCOL_100_LOADED // EXPLOIT DETECTED // SYSTEM FAILURE"
+                ];
+                let lineCount = 0;
+                const interval = setInterval(() => {
+                    if(lineCount < 40) {
+                        terminal.innerHTML += `> ${codes[Math.floor(Math.random() * codes.length)]}<br>`;
+                        terminal.scrollTop = terminal.scrollHeight;
+                        lineCount++;
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 60);
+            }, 1600);
+
+            // Phase 3 : Pop-up système final style avertissement bloqué
+            setTimeout(() => {
+                alertBox.style.display = 'block';
+            }, 4200);
+
+            // Redirection vers le panneau d'attente
+            setTimeout(() => {
+                try { localStorage.setItem('survivor_registered', 'true'); } catch(e) {}
                 if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
                 showWaitingScreen();
-            }, 5000);
+            }, 6500);
         }
 
         function handleBackClick() {
@@ -501,19 +498,17 @@
                     errEl.innerHTML = `> ERROR_0x445: ACCESS_DENIED. DECRYPTION_FAILED (ATTEMPT ${backClickCount}/3).`;
                 }
             } else {
-                try {
-                    localStorage.removeItem('survivor_registered');
-                } catch(e) {}
+                try { localStorage.removeItem('survivor_registered'); } catch(e) {}
                 window.location.reload();
             }
         }
 
         function showWaitingScreen() {
             document.body.innerHTML = `
-                <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:#000; color:#00ff41; font-family:'Courier New', Courier, monospace; font-size:22px; letter-spacing:1px; text-align:center; padding:20px; box-sizing:border-box; text-shadow: 0 0 5px rgba(0,255,65,0.5);">
-                    <div style="margin-bottom: 20px;">> WAITING TO LOAD THE PROCESS<span class="matrix-cursor">/</span></div>
-                    <div id="back-error" style="color: #ff3333; font-size: 14px; min-height: 20px; margin-bottom: 30px; font-weight: bold; text-shadow: none;"></div>
-                    <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:'Courier New', Courier, monospace; padding:10px 20px; cursor:pointer; font-size:14px; text-transform:uppercase; transition: all 0.3s; text-shadow: 0 0 5px rgba(0,255,65,0.5); box-shadow: 0 0 10px rgba(0,255,65,0.2);">[ BACK ]</button>
+                <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:#000; color:#00ff41; font-family:'Courier New', Courier, monospace; font-size:18px; letter-spacing:1px; text-align:center; padding:25px; box-sizing:border-box; text-shadow: 0 0 5px rgba(0,255,65,0.5);">
+                    <div style="margin-bottom: 25px;">> WAITING TO LOAD THE PROCESS<span class="matrix-cursor">/</span></div>
+                    <div id="back-error" style="color: #ff3333; font-size: 13px; min-height: 20px; margin-bottom: 35px; font-weight: bold; text-shadow: none; line-height:1.4;"></div>
+                    <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:'Courier New', Courier, monospace; padding:12px 24px; cursor:pointer; font-size:13px; text-transform:uppercase; transition: all 0.3s; text-shadow: 0 0 5px rgba(0,255,65,0.5); box-shadow: 0 0 10px rgba(0,255,65,0.2);">[ BACK ]</button>
                 </div>
             `;
         }
