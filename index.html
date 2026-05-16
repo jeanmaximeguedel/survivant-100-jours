@@ -5,7 +5,6 @@
     <title>S_F_PROTOCOL_100 // SURVIVANT</title>
     <style>
         :root { --neon: #00ff41; --bg: #0a0a0a; --gps-purple: #8338ec; }
-        /* CORRECTION : Le scroll vertical est libéré */
         body { background: var(--bg); color: var(--neon); font-family: monospace; margin: 0; text-transform: uppercase; }
         
         #header { display: flex; justify-content: space-between; padding: 20px; border-bottom: 2px solid var(--neon); }
@@ -48,18 +47,17 @@
 
         @keyframes ripple { 0% { width: 14px; height: 14px; opacity: 1; } 100% { width: 100px; height: 100px; opacity: 0; } }
 
+        /* GRILLE DE CAMERAS AVEC CURSEUR POINTEUR */
         .cam-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 15px; }
-        .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; }
-        video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
+        .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; cursor: pointer; transition: border-color 0.3s; }
+        .cam-container:hover { border-color: var(--neon); }
+        video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); pointer-events: none; }
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; }
         
         #rules { padding: 20px; color: #aaa; font-size: 0.85rem; border-top: 1px solid #222; }
 
         .matrix-cursor {
-            color: var(--neon);
-            font-weight: bold;
-            animation: flash 1.2s infinite;
-            margin-left: 2px;
+            color: var(--neon); font-weight: bold; animation: flash 1.2s infinite; margin-left: 2px;
         }
         @keyframes flash { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
@@ -67,15 +65,43 @@
         .footer-left { flex: 1; text-align: left; }
         .footer-right { flex: 1; text-align: right; }
 
+        /* OVERLAY ET MODAL POUR LA VIDEO AGRANDIE */
+        #video-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer;
+        }
+        #video-modal {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 33vw; /* 1/3 de l'écran sur Bureau */
+            border: 2px solid var(--neon); box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
+            z-index: 8001; background: #000; pointer-events: none;
+        }
+        #video-modal video { width: 100%; display: block; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
+        .modal-label { position: absolute; top: 10px; left: 10px; font-size: 12px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; }
+
+        /* RESPONSIVE MOBILE : POLICE PLUS GRANDE ET VIDEO ADAPTEE */
         @media (max-width: 768px) {
             .cam-grid { grid-template-columns: repeat(2, 1fr); }
             .flex-footer { flex-direction: column; gap: 20px; }
             .footer-left { order: 1; }
             .footer-right { text-align: left; order: 2; }
+            
+            /* Amélioration de la lisibilité des instructions sur mobile */
+            .footer-right { font-size: 1.15rem; line-height: 1.6; }
+            .footer-right h3 { font-size: 1.3rem !important; }
+            
+            /* La vidéo prend 90% de la largeur sur mobile pour être visible */
+            #video-modal { width: 90vw; }
         }
     </style>
 </head>
 <body>
+
+    <div id="video-overlay"></div>
+    <div id="video-modal">
+        <div class="modal-label" id="modal-label"></div>
+        <video id="modal-video" autoplay muted loop playsinline></video>
+    </div>
 
     <div id="main-content">
         <div id="header">
@@ -88,10 +114,10 @@
         </div>
 
         <div class="cam-grid">
-            <div class="cam-container"><div class="cam-label">CAM_01 // NEF_SUD</div><video src="cam1.mp4" autoplay muted loop playsinline></video></div>
-            <div class="cam-container"><div class="cam-label">CAM_02 // CREATE_B3</div><video src="cam2.mp4" autoplay muted loop playsinline></video></div>
-            <div class="cam-container"><div class="cam-label">CAM_03 // CHILL_ZONE</div><video src="cam3.mp4" autoplay muted loop playsinline></video></div>
-            <div class="cam-container"><div class="cam-label">CAM_04 // TWITCH_STREAM</div><video src="cam4.mp4" autoplay muted loop playsinline></video></div>
+            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_01 // NEF_SUD</div><video src="cam1.mp4" autoplay muted loop playsinline></video></div>
+            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_02 // CREATE_B3</div><video src="cam2.mp4" autoplay muted loop playsinline></video></div>
+            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_03 // CHILL_ZONE</div><video src="cam3.mp4" autoplay muted loop playsinline></video></div>
+            <div class="cam-container" onclick="openVideo(this)"><div class="cam-label">CAM_04 // TWITCH_STREAM</div><video src="cam4.mp4" autoplay muted loop playsinline></video></div>
         </div>
 
         <div id="rules">
@@ -139,6 +165,29 @@
             }
         });
 
+        // GESTIONNAIRE D'AGRANDISSEMENT DES VIDEOS
+        const videoOverlay = document.getElementById('video-overlay');
+        const videoModal = document.getElementById('video-modal');
+        const modalVideo = document.getElementById('modal-video');
+        const modalLabel = document.getElementById('modal-label');
+
+        function openVideo(element) {
+            const src = element.querySelector('video').src;
+            const labelText = element.querySelector('.cam-label').innerText;
+            
+            modalVideo.src = src;
+            modalLabel.innerText = labelText;
+            
+            videoOverlay.style.display = 'block';
+            videoModal.style.display = 'block';
+        }
+
+        videoOverlay.addEventListener('click', () => {
+            videoOverlay.style.display = 'none';
+            videoModal.style.display = 'none';
+            modalVideo.src = ""; // Coupe le flux vidéo pour économiser la bande passante
+        });
+
         function update() {
             const clockEl = document.getElementById("clock");
             if (!clockEl) return;
@@ -154,7 +203,6 @@
         setInterval(update, 1000);
         update();
 
-        // CAPTURE EMAIL (WEB3FORMS) + ANIMATION
         function triggerMatrixMelt(e) {
             e.preventDefault();
             const emailInput = document.getElementById('subscriber-email');
