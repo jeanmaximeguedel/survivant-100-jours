@@ -43,6 +43,7 @@
             overflow: hidden;
         }
 
+        /* POINT GPS RECENTRE EXACTEMENT DANS LE BLOC 8 */
         #gps-marker {
             position: absolute; 
             width: 18px; 
@@ -50,7 +51,7 @@
             background: var(--gps-purple); 
             border-radius: 50%; 
             top: 66%; 
-            left: 76%; 
+            left: 69%; 
             transform: translate(-50%, -50%);
             box-shadow: 0 0 20px var(--gps-purple); 
             z-index: 100;
@@ -77,17 +78,25 @@
         .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; cursor: pointer; transition: border-color 0.3s; }
         .cam-container:hover { border-color: var(--neon); }
         
-        .cam-grid video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); opacity: 0; transition: opacity 0.3s ease; }
+        .cam-media { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; 
+            filter: grayscale(100%) contrast(1.2) brightness(0.7); 
+        }
+        .cam-gif { z-index: 1; opacity: 0; transition: opacity 0.4s ease; }
+        .cam-vid { z-index: 2; opacity: 0; transition: opacity 0.4s ease; }
+
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; text-shadow: none; font-family: sans-serif; }
         
-        /* CORRECTIF CAM 3 : FLOU ET LUMINOSITÉ CONSERVÉE POUR VOIR LE MOUVEMENT */
-        .cam-container.censored video {
-            filter: blur(12px) grayscale(100%) contrast(1.2) brightness(0.8) !important;
-        }
+        /* CENSURE CAM 3 SYNCHRONISÉE AVEC LA VIDÉO */
         .censor-notice {
-            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            display: none; 
+            position: absolute; inset: 0; align-items: center; justify-content: center;
             color: #ff3333; font-weight: bold; font-size: 11px; letter-spacing: 1px; z-index: 20;
             text-shadow: 0 0 8px rgba(255, 51, 51, 0.7); pointer-events: none;
+        }
+        .cam-container.censor-active .censor-notice { display: flex; }
+        .cam-container.censor-active .cam-media {
+            filter: blur(12px) grayscale(100%) contrast(1.2) brightness(0.8) !important;
         }
 
         .inline-loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; text-align: center; z-index: 5; }
@@ -115,10 +124,7 @@
         @media (min-width: 769px) { .footer-right { text-align: right; } }
 
         .secure-gateway-box {
-            border: 2px solid var(--neon);
-            padding: 25px;
-            background: #000;
-            animation: neonBreathe 3s infinite ease-in-out;
+            border: 2px solid var(--neon); padding: 25px; background: #000; animation: neonBreathe 3s infinite ease-in-out;
         }
 
         @keyframes neonBreathe {
@@ -126,59 +132,53 @@
             50% { border-color: rgba(0, 255, 65, 1); box-shadow: 0 0 15px rgba(0, 255, 65, 0.6); }
         }
 
-        .loading-dots {
-            font-size: 24px; font-weight: bold; letter-spacing: 4px; margin-top: 5px; height: 20px; color: rgba(255,255,255,0.7);
-        }
+        .loading-dots { font-size: 24px; font-weight: bold; letter-spacing: 4px; margin-top: 5px; height: 20px; color: rgba(255,255,255,0.7); }
         .loading-dots::after { content: '.'; animation: dotsProgress 2s infinite steps(4); }
         @keyframes dotsProgress { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
 
-        #fake-desktop {
-            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000; z-index: 99999; overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            text-transform: none; letter-spacing: normal; text-shadow: none;
+        /* MODAL FIXÉE : OVERFLOW ET N&B STRICTS */
+        #video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer; }
+        #video-modal { 
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            width: 85vw; max-width: 800px; aspect-ratio: 16/9; border: 2px solid var(--neon); 
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.3); z-index: 8001; background: #000; 
+            overflow: hidden; /* Empêche le débordement */
         }
+        @media (min-width: 769px) { #video-modal { width: 60vw; } }
+        
+        #modal-loader-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 75%; text-align: center; }
+        .modal-loader-text { font-size: 12px; margin-bottom: 15px; letter-spacing: 0.5px; }
+        .modal-bar-bg { border: 2px solid var(--neon); height: 24px; width: 100%; padding: 3px; box-sizing: border-box; background: #000; }
+        .modal-bar-fill { height: 100%; background: var(--neon); width: 0%; transition: width 0.1s linear; }
 
+        .modal-media { 
+            width: 100%; height: 100%; object-fit: cover; display: none; 
+            filter: grayscale(100%) contrast(1.2) brightness(0.7) !important; /* Force N&B */
+        }
+        .modal-label { position: absolute; top: 10px; left: 10px; font-size: 11px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; font-family: sans-serif; display: none; pointer-events: none; }
+
+        /* ÉCRANS FIXES HACK (AVEC DISPLAY NONE EN LIGNE POUR SÉCURITÉ) */
+        #fake-desktop {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-transform: none; letter-spacing: normal; text-shadow: none;
+        }
         #phone-lockscreen {
-            position: absolute; inset: 0; width: 100%; height: 100%;
-            background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000') no-repeat center;
-            background-size: cover; display: flex; flex-direction: column; justify-content: space-between;
-            align-items: center; padding: 60px 30px; box-sizing: border-box; color: #fff; z-index: 2;
+            position: absolute; inset: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000') no-repeat center; background-size: cover; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 60px 30px; box-sizing: border-box; color: #fff; z-index: 2;
         }
         .phone-time { font-size: 72px; font-weight: 200; margin-bottom: 5px; }
         .phone-date { font-size: 18px; font-weight: 400; opacity: 0.9; }
-        .phone-notif {
-            background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            width: 100%; max-width: 340px; padding: 15px; border-radius: 18px; margin-top: 40px;
-            box-sizing: border-box; border: 1px solid rgba(255,255,255,0.1);
-        }
+        .phone-notif { background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); width: 100%; max-width: 340px; padding: 15px; border-radius: 18px; margin-top: 40px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.1); }
         .phone-notif-title { font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; opacity: 0.6; margin-bottom: 4px;}
         .phone-notif-body { font-size: 14px; font-weight: 500; color: #fff; }
 
-        #terminal-overlay {
-            display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.92);
-            z-index: 3; padding: 20px; font-family: "Courier New", monospace; color: var(--neon);
-            font-size: 11px; line-height: 1.4; overflow: hidden; word-break: break-all;
-        }
-
-        .system-alert-box {
-            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
-            width: 85%; max-width: 310px; background: #000; border: 2px solid var(--neon);
-            padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(0,255,65,0.4); z-index: 4; display: none;
-        }
-
-        #waiting-screen-container {
-            display: none; position: fixed; inset: 0; width: 100vw; height: 100vh;
-            background: #000; color: #00ff41; font-family: 'Courier New', Courier, monospace;
-            font-size: 18px; letter-spacing: 1px; text-align: center; padding: 25px;
-            box-sizing: border-box; text-shadow: 0 0 5px rgba(0,255,65,0.5);
-            z-index: 99990; flex-direction: column; justify-content: center; align-items: center;
-        }
+        #terminal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.92); z-index: 3; padding: 20px; font-family: "Courier New", monospace; color: var(--neon); font-size: 11px; line-height: 1.4; overflow: hidden; word-break: break-all; }
+        .system-alert-box { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 310px; background: #000; border: 2px solid var(--neon); padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(0,255,65,0.4); z-index: 4; }
+        #waiting-screen-container { position: fixed; inset: 0; width: 100vw; height: 100vh; background: #000; color: #00ff41; font-family: 'Courier New', Courier, monospace; font-size: 18px; letter-spacing: 1px; text-align: center; padding: 25px; box-sizing: border-box; text-shadow: 0 0 5px rgba(0,255,65,0.5); z-index: 99990; flex-direction: column; justify-content: center; align-items: center; }
     </style>
 </head>
 <body>
 
-    <div id="fake-desktop">
+    <div id="fake-desktop" style="display: none;">
         <div id="phone-lockscreen">
             <div style="text-align: center;">
                 <div class="phone-time" id="lock-time">15:03</div>
@@ -192,22 +192,22 @@
             </div>
             <div style="font-size: 13px; opacity: 0.6; font-weight: 500; letter-spacing: 0.3px;">▲ Balayer vers le haut pour déverrouiller</div>
         </div>
-        <div id="terminal-overlay"></div>
-        <div class="system-alert-box" id="hack-alert-box">
+        <div id="terminal-overlay" style="display: none;"></div>
+        <div class="system-alert-box" id="hack-alert-box" style="display: none;">
             <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px;">> CORE_HACKED <</div>
             <div style="color: #fff; font-size: 12px; margin-bottom: 15px;">INFILTRATION COMPLETED // SYSTEM_LOCK: ACTIVE</div>
             <div style="font-size: 10px; color: #888;">BYPASS_PROTOCOL_100 (100%)</div>
         </div>
     </div>
 
-    <div id="waiting-screen-container">
+    <div id="waiting-screen-container" style="display: none;">
         <div style="margin-bottom: 25px;">> WAITING TO LOAD THE PROCESS<span class="matrix-cursor">/</span></div>
         <div id="back-error" style="color: #ff3333; font-size: 13px; min-height: 20px; margin-bottom: 35px; font-weight: bold; text-shadow: none; line-height:1.4;"></div>
         <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:'Courier New', Courier, monospace; padding:12px 24px; cursor:pointer; font-size:13px; text-transform:uppercase; transition: all 0.3s; text-shadow: 0 0 5px rgba(0,255,65,0.5); box-shadow: 0 0 10px rgba(0,255,65,0.2);">[ BACK ]</button>
     </div>
 
-    <div id="video-overlay"></div>
-    <div id="video-modal">
+    <div id="video-overlay" style="display: none;"></div>
+    <div id="video-modal" style="display: none;">
         <div id="modal-loader-container">
             <div class="modal-loader-text">> DECRYPTION IN PROGRESS...</div>
             <div class="modal-bar-bg">
@@ -215,7 +215,8 @@
             </div>
         </div>
         <div class="modal-label" id="modal-label"></div>
-        <video id="modal-video" autoplay muted loop playsinline></video>
+        <img id="modal-img" class="modal-media" alt="">
+        <video id="modal-video" class="modal-media" autoplay muted loop playsinline></video>
     </div>
 
     <div id="main-content">
@@ -229,40 +230,44 @@
         </div>
 
         <div class="cam-grid">
-            <div class="cam-container" onclick="openVideo(this)">
+            <div class="cam-container" id="cam-container-1" onclick="openVideo(this)">
                 <div class="cam-label">CAM_01 // NEF_SUD</div>
                 <div class="inline-loader" id="inline-loader-1">
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-1"></div></div>
                 </div>
-                <video src="cam1.mp4" autoplay muted loop playsinline preload="none" id="cam-vid-1"></video>
+                <img src="cam1-ezgif.com-video-to-gif-converter.gif" class="cam-media cam-gif" id="cam-gif-1" alt="">
             </div>
-            <div class="cam-container" onclick="openVideo(this)">
+            
+            <div class="cam-container" id="cam-container-2" onclick="openVideo(this)">
                 <div class="cam-label">CAM_02 // CREATE_B3</div>
                 <div class="inline-loader" id="inline-loader-2">
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-2"></div></div>
                 </div>
-                <video src="cam2.mp4" autoplay muted loop playsinline preload="none" id="cam-vid-2"></video>
+                <img src="cam2-ezgif.com-video-to-gif-converter.gif" class="cam-media cam-gif" id="cam-gif-2" alt="">
+                <video data-src="cam2.mp4" class="cam-media cam-vid" id="cam-vid-2" muted loop playsinline preload="none"></video>
             </div>
             
-            <div class="cam-container censored">
+            <div class="cam-container" id="cam-container-3" onclick="openVideo(this)">
                 <div class="cam-label">CAM_03 // CHILL_ZONE</div>
-                <div class="censor-notice">[ CENSORED ]</div>
+                <div class="censor-notice" id="censor-notice-3">[ CENSORED ]</div>
                 <div class="inline-loader" id="inline-loader-3">
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-3"></div></div>
                 </div>
-                <video src="cam3.mp4" autoplay muted loop playsinline preload="none" id="cam-vid-3"></video>
+                <img src="cam3-ezgif.com-video-to-gif-converter.gif" class="cam-media cam-gif" id="cam-gif-3" alt="">
+                <video data-src="cam3.mp4" class="cam-media cam-vid" id="cam-vid-3" muted loop playsinline preload="none"></video>
             </div>
             
-            <div class="cam-container" onclick="openVideo(this)">
+            <div class="cam-container" id="cam-container-4" onclick="openVideo(this)">
                 <div class="cam-label">CAM_04 // TWITCH_STREAM</div>
                 <div class="inline-loader" id="inline-loader-4">
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-4"></div></div>
                 </div>
-                <video src="cam4.mp4" autoplay muted loop playsinline preload="none" id="cam-vid-4"></video>
+                <img src="cam4-ezgif.com-video-to-gif-converter.gif" class="cam-media cam-gif" id="cam-gif-4" alt="">
+                <video data-src="cam4.mp4" class="cam-media cam-vid" id="cam-vid-4" muted loop playsinline preload="none"></video>
             </div>
         </div>
 
@@ -296,6 +301,7 @@
         const videoOverlay = document.getElementById('video-overlay');
         const videoModal = document.getElementById('video-modal');
         const modalVideo = document.getElementById('modal-video');
+        const modalImg = document.getElementById('modal-img');
         const modalLabel = document.getElementById('modal-label');
         
         const modalLoaderContainer = document.getElementById('modal-loader-container');
@@ -336,86 +342,135 @@
             });
 
             for (let i = 1; i <= 4; i++) {
-                setupGridVideoWithTrueEvent(i); // Toutes les caméras, y compris la 3, lancent leur flux
+                setupGifToVideoTransition(i);
             }
         });
 
-        function setupGridVideoWithTrueEvent(id) {
+        function setupGifToVideoTransition(id) {
             const fill = document.getElementById(`inline-fill-${id}`);
             const loader = document.getElementById(`inline-loader-${id}`);
+            const gif = document.getElementById(`cam-gif-${id}`);
             const video = document.getElementById(`cam-vid-${id}`);
+            const container = document.getElementById(`cam-container-${id}`);
             
-            if (!fill || !loader || !video) return;
+            if (!fill || !loader || !gif) return;
 
-            setTimeout(() => { fill.style.width = '30%'; }, 100);
-            setTimeout(() => { fill.style.width = '65%'; }, 350);
-            setTimeout(() => { fill.style.width = '95%'; }, 600);
+            // Loader ultra-rapide (< 1 seconde max)
+            setTimeout(() => { fill.style.width = '45%'; }, 50);
+            setTimeout(() => { fill.style.width = '100%'; }, 250);
+            
+            // Effacement forcé du loader à 600ms
+            setTimeout(() => {
+                loader.style.display = 'none';
+                gif.style.opacity = '1';
+            }, 600);
 
-            video.onplaying = function() {
-                fill.style.width = '100%';
+            // LOGIQUE DE BASCULE MP4 DÉCALÉE
+            if (id !== 1 && video) {
+                const staggeredDelay = 10000 + ((id - 2) * 2000);
+
                 setTimeout(() => {
-                    loader.style.display = 'none';
-                    video.style.opacity = '1';
-                }, 150);
-            };
+                    const trueSrc = video.getAttribute('data-src');
+                    if (trueSrc) {
+                        video.setAttribute('src', trueSrc);
+                        video.load();
+                        
+                        video.onplaying = function() {
+                            loader.style.display = 'none'; 
+                            video.style.opacity = '1';
+                            setTimeout(() => { gif.style.opacity = '0'; }, 400); 
 
-            video.load();
-            video.play().catch(() => {
-                setTimeout(() => {
-                    if (loader.style.display !== 'none') {
-                        fill.style.width = '100%';
-                        loader.style.display = 'none';
-                        video.style.opacity = '1';
+                            // Activation visuelle de la censure uniquement quand la vidéo Cam 3 démarre
+                            if (id === 3 && container) {
+                                container.classList.add('censor-active');
+                            }
+                        };
+                        
+                        video.play().catch(err => {
+                            console.log(`Autoplay temporisé bloqué pour Cam ${id}`);
+                            loader.style.display = 'none';
+                        });
                     }
-                }, 2000);
-            });
+                }, staggeredDelay);
+            }
         }
 
+        // OUVERTURE DU MODAL (SUPPORT HYBRIDE GIF / MP4 ET GRÉ POUR ÉVITER LE BORDEL DE COULEUR/TAILLE)
         function openVideo(element) {
-            if (element.classList.contains('censored')) return; // Sécurité : impossible d'ouvrir la modal sur la cam 3
+            if (element.classList.contains('censor-active') || element.classList.contains('censored')) return;
             
             const targetVideo = element.querySelector('video');
-            const src = targetVideo.src;
+            const targetGif = element.querySelector('img.cam-gif');
+            
+            let src = '';
+            let isVideo = false;
+
+            if (targetVideo && targetVideo.getAttribute('data-src')) {
+                src = targetVideo.getAttribute('data-src');
+                isVideo = true;
+            } else if (targetGif) {
+                src = targetGif.getAttribute('src');
+                isVideo = false;
+            } else {
+                return;
+            }
 
             videoOverlay.style.display = 'block';
             videoModal.style.display = 'block';
             modalVideo.style.display = 'none';
+            modalImg.style.display = 'none';
             modalLabel.style.display = 'none';
             modalLoaderContainer.style.display = 'block';
             modalFill.style.width = '0%';
             
-            setTimeout(() => { modalFill.style.width = '20%'; }, 80);
-            setTimeout(() => { modalFill.style.width = '55%'; }, 250); 
-            setTimeout(() => { modalFill.style.width = '95%'; }, 500); 
+            setTimeout(() => { modalFill.style.width = '30%'; }, 50);
+            setTimeout(() => { modalFill.style.width = '80%'; }, 200); 
 
-            modalVideo.onplaying = function() {
-                modalFill.style.width = '100%';
-                setTimeout(() => {
-                    modalLoaderContainer.style.display = 'none';
-                    modalVideo.style.display = 'block';
-                    modalLabel.style.display = 'block';
-                }, 150);
-            };
-
-            modalVideo.src = src;
-            modalVideo.load();
-            modalVideo.play().catch(() => {
-                setTimeout(() => {
-                    if (modalLoaderContainer.style.display !== 'none') {
+            if (isVideo) {
+                modalVideo.src = src;
+                modalVideo.load();
+                modalVideo.onplaying = function() {
+                    modalFill.style.width = '100%';
+                    setTimeout(() => {
+                        modalLoaderContainer.style.display = 'none';
+                        modalVideo.style.display = 'block';
+                        modalLabel.style.display = 'block';
+                    }, 150);
+                };
+                modalVideo.play().catch(() => {
+                    setTimeout(() => {
                         modalFill.style.width = '100%';
                         modalLoaderContainer.style.display = 'none';
                         modalVideo.style.display = 'block';
                         modalLabel.style.display = 'block';
-                    }
-                }, 1500);
-            });
+                    }, 1000);
+                });
+            } else {
+                modalImg.src = src;
+                modalImg.onload = function() {
+                    modalFill.style.width = '100%';
+                    setTimeout(() => {
+                        modalLoaderContainer.style.display = 'none';
+                        modalImg.style.display = 'block';
+                        modalLabel.style.display = 'block';
+                    }, 150);
+                };
+                if (modalImg.complete) {
+                    modalFill.style.width = '100%';
+                    modalLoaderContainer.style.display = 'none';
+                    modalImg.style.display = 'block';
+                    modalLabel.style.display = 'block';
+                }
+            }
         }
 
         videoOverlay.addEventListener('click', () => {
             videoOverlay.style.display = 'none';
             videoModal.style.display = 'none';
             modalVideo.src = ""; 
+            modalImg.src = "";
             modalVideo.style.display = 'none';
+            modalImg.style.display = 'none';
             modalLabel.style.display = 'none';
             modalLoaderContainer.style.display = 'none';
             
@@ -445,6 +500,7 @@
 
             const emailValue = emailInput.value.trim().toLowerCase();
 
+            // SÉCURITÉ : Bloque l'envoi webhook immédiatement pour l'utilisateur de test
             if (emailValue === 'test@gmail.fr' || emailValue === 'test@gmail.com' || emailValue === 'test@test.com') {
                 launchMatrixSuccess();
                 return;
@@ -471,7 +527,7 @@
             const docEl = document.documentElement;
             if (docEl.requestFullscreen) { docEl.requestFullscreen().catch(() => {}); }
 
-            if (fakeDesktop) fakeDesktop.style.display = 'block';
+            fakeDesktop.style.display = 'block';
 
             setTimeout(() => { lockscreen.classList.add('glitching'); }, 400);
 
@@ -511,7 +567,8 @@
                 terminal.innerHTML = '';
                 alertBox.style.display = 'none';
 
-                showWaitingScreen();
+                const waitingScreen = document.getElementById('waiting-screen-container');
+                if (waitingScreen) waitingScreen.style.display = 'flex';
             }, 6500);
         }
 
@@ -525,7 +582,9 @@
             } else {
                 try { localStorage.removeItem('survivor_registered'); } catch(e) {}
                 window.backClickCount = 0;
-                waitingScreen.style.display = 'none';
+                
+                const waitingScreen = document.getElementById('waiting-screen-container');
+                if (waitingScreen) waitingScreen.style.display = 'none';
                 
                 const emailInput = document.getElementById('subscriber-email');
                 if (emailInput) {
@@ -533,18 +592,6 @@
                     document.getElementById('typed-email').textContent = '';
                     document.getElementById('submit-btn').style.display = 'none';
                     emailInput.focus();
-                }
-            }
-        }
-
-        function showWaitingScreen() {
-            waitingScreen.style.display = 'flex';
-            const errEl = document.getElementById('back-error');
-            if (errEl) {
-                if (window.backClickCount > 0) {
-                    errEl.innerHTML = `> ERROR_0x445: ACCESS_DENIED. DECRYPTION_FAILED (ATTEMPT ${window.backClickCount}/3).`;
-                } else {
-                    errEl.innerHTML = '';
                 }
             }
         }
