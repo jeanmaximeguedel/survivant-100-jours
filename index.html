@@ -32,15 +32,28 @@
         @keyframes pulsePoint { 0% { opacity: 0.3; } 100% { opacity: 1; } }
         
         #radar-box {
-            position: relative; width: 95%; height: 38vh; margin: 15px auto 25px auto;
-            border: 2px solid var(--neon); background: #000 url('plan.png') no-repeat center; 
-            background-size: contain; overflow: hidden;
+            position: relative; 
+            width: 95%; 
+            max-width: 760px; 
+            height: 38vh; 
+            margin: 15px auto 25px auto;
+            border: 2px solid var(--neon); 
+            background: #fff url('plan.png') no-repeat center; 
+            background-size: contain; 
+            overflow: hidden;
         }
 
         #gps-marker {
-            position: absolute; width: 18px; height: 18px; background: var(--gps-purple); 
-            border-radius: 50%; top: 72%; left: 68%; transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px var(--gps-purple); z-index: 100;
+            position: absolute; 
+            width: 18px; 
+            height: 18px; 
+            background: var(--gps-purple); 
+            border-radius: 50%; 
+            top: 66%; 
+            left: 76%; 
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px var(--gps-purple); 
+            z-index: 100;
             animation: breathe 2s ease-in-out infinite;
         }
 
@@ -67,6 +80,16 @@
         .cam-grid video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); opacity: 0; transition: opacity 0.3s ease; }
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; text-shadow: none; font-family: sans-serif; }
         
+        /* CORRECTIF CAM 3 : FLOU ET LUMINOSITÉ CONSERVÉE POUR VOIR LE MOUVEMENT */
+        .cam-container.censored video {
+            filter: blur(12px) grayscale(100%) contrast(1.2) brightness(0.8) !important;
+        }
+        .censor-notice {
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            color: #ff3333; font-weight: bold; font-size: 11px; letter-spacing: 1px; z-index: 20;
+            text-shadow: 0 0 8px rgba(255, 51, 51, 0.7); pointer-events: none;
+        }
+
         .inline-loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; text-align: center; z-index: 5; }
         .inline-loader-text { font-size: 8px; margin-bottom: 6px; letter-spacing: 0.5px; }
         .inline-bar-bg { border: 1px solid var(--neon); height: 10px; width: 100%; padding: 1px; box-sizing: border-box; background: #000; }
@@ -91,19 +114,24 @@
         .footer-right { flex: 1; text-align: left; }
         @media (min-width: 769px) { .footer-right { text-align: right; } }
 
-        #video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer; }
-        #video-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85vw; border: 2px solid var(--neon); box-shadow: 0 0 40px rgba(0, 255, 65, 0.3); z-index: 8001; background: #000; pointer-events: none; min-height: 180px; }
-        @media (min-width: 769px) { #video-modal { width: 33vw; min-height: 250px; } }
-        
-        #modal-loader-container { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 75%; text-align: center; }
-        .modal-loader-text { font-size: 12px; margin-bottom: 15px; letter-spacing: 0.5px; }
-        .modal-bar-bg { border: 2px solid var(--neon); height: 24px; width: 100%; padding: 3px; box-sizing: border-box; background: #000; }
-        .modal-bar-fill { height: 100%; background: var(--neon); width: 0%; transition: width 0.1s linear; }
+        .secure-gateway-box {
+            border: 2px solid var(--neon);
+            padding: 25px;
+            background: #000;
+            animation: neonBreathe 3s infinite ease-in-out;
+        }
 
-        #video-modal video { width: 100%; display: none; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
-        .modal-label { position: absolute; top: 10px; left: 10px; font-size: 11px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; font-family: sans-serif; display: none; }
+        @keyframes neonBreathe {
+            0%, 100% { border-color: rgba(0, 255, 65, 0.4); box-shadow: 0 0 4px rgba(0, 255, 65, 0.2); }
+            50% { border-color: rgba(0, 255, 65, 1); box-shadow: 0 0 15px rgba(0, 255, 65, 0.6); }
+        }
 
-        /* SIMULATION HACK MOBILE ET CREDIBLE */
+        .loading-dots {
+            font-size: 24px; font-weight: bold; letter-spacing: 4px; margin-top: 5px; height: 20px; color: rgba(255,255,255,0.7);
+        }
+        .loading-dots::after { content: '.'; animation: dotsProgress 2s infinite steps(4); }
+        @keyframes dotsProgress { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+
         #fake-desktop {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #000; z-index: 99999; overflow: hidden;
@@ -111,7 +139,6 @@
             text-transform: none; letter-spacing: normal; text-shadow: none;
         }
 
-        /* Faux écran de verrouillage Smartphone */
         #phone-lockscreen {
             position: absolute; inset: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000') no-repeat center;
@@ -128,7 +155,6 @@
         .phone-notif-title { font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; opacity: 0.6; margin-bottom: 4px;}
         .phone-notif-body { font-size: 14px; font-weight: 500; color: #fff; }
 
-        /* Effet Glitch & Console de Hack par dessus */
         #terminal-overlay {
             display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.92);
             z-index: 3; padding: 20px; font-family: "Courier New", monospace; color: var(--neon);
@@ -141,26 +167,23 @@
             padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(0,255,65,0.4); z-index: 4; display: none;
         }
 
-        @keyframes glitch-anim {
-            0% { clip-path: inset(40% 0 61% 0); transform: skew(0.3deg); }
-            20% { clip-path: inset(92% 0 1% 0); transform: skew(-0.5deg); }
-            40% { clip-path: inset(15% 0 80% 0); transform: skew(0.5deg); }
-            60% { clip-path: inset(80% 0 5% 0); transform: skew(-0.3deg); }
-            80% { clip-path: inset(3% 0 92% 0); transform: skew(0.8deg); }
-            100% { clip-path: inset(40% 0 61% 0); transform: skew(0deg); }
+        #waiting-screen-container {
+            display: none; position: fixed; inset: 0; width: 100vw; height: 100vh;
+            background: #000; color: #00ff41; font-family: 'Courier New', Courier, monospace;
+            font-size: 18px; letter-spacing: 1px; text-align: center; padding: 25px;
+            box-sizing: border-box; text-shadow: 0 0 5px rgba(0,255,65,0.5);
+            z-index: 99990; flex-direction: column; justify-content: center; align-items: center;
         }
-        .glitching { animation: glitch-anim 0.2s linear infinite; filter: hue-rotate(90deg) saturate(3); }
     </style>
 </head>
 <body>
 
-    <!-- INTERFACE DE SIMULATION EN AVANT PLAN -->
     <div id="fake-desktop">
-        <!-- Étape 1 : Faux Écran Mobile -->
         <div id="phone-lockscreen">
             <div style="text-align: center;">
                 <div class="phone-time" id="lock-time">15:03</div>
                 <div class="phone-date">Samedi 16 mai</div>
+                <div class="loading-dots"></div>
                 
                 <div class="phone-notif">
                     <div class="phone-notif-title"><span>⚙️ SYSTÈME</span><span>à l'instant</span></div>
@@ -169,16 +192,18 @@
             </div>
             <div style="font-size: 13px; opacity: 0.6; font-weight: 500; letter-spacing: 0.3px;">▲ Balayer vers le haut pour déverrouiller</div>
         </div>
-
-        <!-- Étape 2 : Console d'injection de scripts -->
         <div id="terminal-overlay"></div>
-
-        <!-- Étape 3 : Alerte de Verrouillage final -->
         <div class="system-alert-box" id="hack-alert-box">
             <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px;">> CORE_HACKED <</div>
             <div style="color: #fff; font-size: 12px; margin-bottom: 15px;">INFILTRATION COMPLETED // SYSTEM_LOCK: ACTIVE</div>
             <div style="font-size: 10px; color: #888;">BYPASS_PROTOCOL_100 (100%)</div>
         </div>
+    </div>
+
+    <div id="waiting-screen-container">
+        <div style="margin-bottom: 25px;">> WAITING TO LOAD THE PROCESS<span class="matrix-cursor">/</span></div>
+        <div id="back-error" style="color: #ff3333; font-size: 13px; min-height: 20px; margin-bottom: 35px; font-weight: bold; text-shadow: none; line-height:1.4;"></div>
+        <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:'Courier New', Courier, monospace; padding:12px 24px; cursor:pointer; font-size:13px; text-transform:uppercase; transition: all 0.3s; text-shadow: 0 0 5px rgba(0,255,65,0.5); box-shadow: 0 0 10px rgba(0,255,65,0.2);">[ BACK ]</button>
     </div>
 
     <div id="video-overlay"></div>
@@ -210,7 +235,7 @@
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-1"></div></div>
                 </div>
-                <video src="cam1.mp4" autoplay muted loop playsinline preload="auto" id="cam-vid-1"></video>
+                <video src="cam1.mp4" autoplay muted loop playsinline preload="none" id="cam-vid-1"></video>
             </div>
             <div class="cam-container" onclick="openVideo(this)">
                 <div class="cam-label">CAM_02 // CREATE_B3</div>
@@ -218,41 +243,43 @@
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-2"></div></div>
                 </div>
-                <video src="cam2.mp4" autoplay muted loop playsinline preload="auto" id="cam-vid-2"></video>
+                <video src="cam2.mp4" autoplay muted loop playsinline preload="none" id="cam-vid-2"></video>
             </div>
-            <div class="cam-container" onclick="openVideo(this)">
+            
+            <div class="cam-container censored">
                 <div class="cam-label">CAM_03 // CHILL_ZONE</div>
+                <div class="censor-notice">[ CENSORED ]</div>
                 <div class="inline-loader" id="inline-loader-3">
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-3"></div></div>
                 </div>
-                <video src="cam3.mp4" autoplay muted loop playsinline preload="auto" id="cam-vid-3"></video>
+                <video src="cam3.mp4" autoplay muted loop playsinline preload="none" id="cam-vid-3"></video>
             </div>
+            
             <div class="cam-container" onclick="openVideo(this)">
                 <div class="cam-label">CAM_04 // TWITCH_STREAM</div>
                 <div class="inline-loader" id="inline-loader-4">
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-4"></div></div>
                 </div>
-                <video src="cam4.mp4" autoplay muted loop playsinline preload="auto" id="cam-vid-4"></video>
+                <video src="cam4.mp4" autoplay muted loop playsinline preload="none" id="cam-vid-4"></video>
             </div>
         </div>
 
         <div id="rules">
             <div class="flex-footer">
-                <div class="footer-left">
+                <div class="footer-left secure-gateway-box">
                     <h3 class="term-title" style="color:var(--neon); margin-top:0;">> S'INSCRIRE POUR CONNAITRE LES PROCHAINES INSTRUCTIONS</h3>
                     <form onsubmit="triggerMatrixMelt(event)" style="display: flex; align-items: center; margin-top: 10px;">
                         <span class="terminal-prompt" style="color: var(--neon); font-size: 16px; font-weight: bold; white-space: nowrap;">mail : </span>
                         <div style="position: relative; display: flex; align-items: center; min-width: 220px; margin-left: 5px; cursor: text;" onclick="document.getElementById('subscriber-email').focus()">
                             <span id="typed-email" style="color: var(--neon); font-size: 16px; white-space: pre;"></span><span class="matrix-cursor">/</span>
-                            <input type="email" id="subscriber-email" class="terminal-input" required autocomplete="off" enterkeyhint="go" autofocus style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent;">
+                            <input type="email" id="subscriber-email" name="email" class="terminal-input" required autocomplete="off" enterkeyhint="go" autofocus style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent;">
                         </div>
                         <button type="submit" id="submit-btn" class="terminal-submit-btn">[ RUN ]</button>
                     </form>
                 </div>
-
-                <div class="footer-right">
+                <div class="footer-right" style="padding-top: 10px;">
                     <h3 style="color:var(--neon); margin-top:0;">[PARAMÈTRES DE SURVIE]</h3>
                     - 100 JOURS SANS SORTIR DE STATION F.<br>
                     - EQUIPEMENT : 0 unité.
@@ -262,7 +289,9 @@
     </div>
 
     <script>
-        let backClickCount = 0;
+        const MAKE_WEBHOOK_URL = "METS_TON_URL_DE_WEBHOOK_ICI";
+
+        window.backClickCount = 0;
 
         const videoOverlay = document.getElementById('video-overlay');
         const videoModal = document.getElementById('video-modal');
@@ -271,8 +300,8 @@
         
         const modalLoaderContainer = document.getElementById('modal-loader-container');
         const modalFill = document.getElementById('modal-fill');
+        const waitingScreen = document.getElementById('waiting-screen-container');
 
-        // Mettre à l'heure le faux écran lockscreen mobile
         function syncLockClock() {
             const now = new Date();
             const hr = String(now.getHours()).padStart(2, '0');
@@ -282,11 +311,9 @@
         }
         syncLockClock();
 
-        try {
-            if (localStorage.getItem('survivor_registered') === 'true') {
-                showWaitingScreen();
-            }
-        } catch (e) {}
+        if (localStorage.getItem('survivor_registered') === 'true') {
+            waitingScreen.style.display = 'flex';
+        }
 
         window.addEventListener('DOMContentLoaded', () => {
             const emailInput = document.getElementById('subscriber-email');
@@ -309,7 +336,7 @@
             });
 
             for (let i = 1; i <= 4; i++) {
-                setupGridVideoWithTrueEvent(i);
+                setupGridVideoWithTrueEvent(i); // Toutes les caméras, y compris la 3, lancent leur flux
             }
         });
 
@@ -345,6 +372,8 @@
         }
 
         function openVideo(element) {
+            if (element.classList.contains('censored')) return; // Sécurité : impossible d'ouvrir la modal sur la cam 3
+            
             const targetVideo = element.querySelector('video');
             const src = targetVideo.src;
 
@@ -414,28 +443,25 @@
             const emailInput = document.getElementById('subscriber-email');
             if (!emailInput || !emailInput.value) return;
 
-            const emailValue = emailInput.value;
+            const emailValue = emailInput.value.trim().toLowerCase();
 
-            if (emailValue.toLowerCase() === 'test@gmail.fr') {
+            if (emailValue === 'test@gmail.fr' || emailValue === 'test@gmail.com' || emailValue === 'test@test.com') {
                 launchMatrixSuccess();
                 return;
             }
 
-            fetch("https://api.web3forms.com/submit", {
+            fetch(MAKE_WEBHOOK_URL, {
                 method: "POST",
-                headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    access_key: "d36b83ff-b67a-42bc-9142-871294ee312e",
                     email: emailValue,
-                    subject: "NOUVEAU SURVIVANT INSCRIT",
-                    from_name: "Terminal Protocol 100"
+                    timestamp: new Date().toISOString()
                 })
-            }).catch(err => console.error(err));
+            }).catch(err => console.error("Erreur Webhook:", err));
 
             launchMatrixSuccess();
         }
 
-        // ANIMATION CRÉDIBLE DE SIMULATION MOBILE
         function launchMatrixSuccess() {
             const fakeDesktop = document.getElementById('fake-desktop');
             const lockscreen = document.getElementById('phone-lockscreen');
@@ -447,17 +473,12 @@
 
             if (fakeDesktop) fakeDesktop.style.display = 'block';
 
-            // Phase 1 : Le téléphone glitch sévèrement (durée : 1.2s)
-            setTimeout(() => {
-                lockscreen.classList.add('glitching');
-            }, 400);
+            setTimeout(() => { lockscreen.classList.add('glitching'); }, 400);
 
-            // Phase 2 : Le système s'effondre et laisse place à la console brute de déchiffrage
             setTimeout(() => {
                 lockscreen.style.display = 'none';
                 terminal.style.display = 'block';
                 
-                // Injection continue de fausses lignes de code cryptées à haute vitesse
                 const codes = [
                     "STATION_F_CORE_BYPASS...", "CONNECTING TO LOCAL_HOST...", "SUCCEEDED.",
                     "GRANTING ROOT_PRIVILEGES...", "WIPING SECURITY_LOGS...", "OK.",
@@ -477,40 +498,55 @@
                 }, 60);
             }, 1600);
 
-            // Phase 3 : Pop-up système final style avertissement bloqué
-            setTimeout(() => {
-                alertBox.style.display = 'block';
-            }, 4200);
+            setTimeout(() => { alertBox.style.display = 'block'; }, 4200);
 
-            // Redirection vers le panneau d'attente
             setTimeout(() => {
                 try { localStorage.setItem('survivor_registered', 'true'); } catch(e) {}
                 if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+                
+                fakeDesktop.style.display = 'none';
+                lockscreen.style.display = 'flex';
+                lockscreen.classList.remove('glitching');
+                terminal.style.display = 'none';
+                terminal.innerHTML = '';
+                alertBox.style.display = 'none';
+
                 showWaitingScreen();
             }, 6500);
         }
 
         function handleBackClick() {
-            backClickCount++;
+            window.backClickCount++;
             const errEl = document.getElementById('back-error');
-            if (backClickCount < 3) {
+            if (window.backClickCount < 3) {
                 if (errEl) {
-                    errEl.innerHTML = `> ERROR_0x445: ACCESS_DENIED. DECRYPTION_FAILED (ATTEMPT ${backClickCount}/3).`;
+                    errEl.innerHTML = `> ERROR_0x445: ACCESS_DENIED. DECRYPTION_FAILED (ATTEMPT ${window.backClickCount}/3).`;
                 }
             } else {
                 try { localStorage.removeItem('survivor_registered'); } catch(e) {}
-                window.location.reload();
+                window.backClickCount = 0;
+                waitingScreen.style.display = 'none';
+                
+                const emailInput = document.getElementById('subscriber-email');
+                if (emailInput) {
+                    emailInput.value = '';
+                    document.getElementById('typed-email').textContent = '';
+                    document.getElementById('submit-btn').style.display = 'none';
+                    emailInput.focus();
+                }
             }
         }
 
         function showWaitingScreen() {
-            document.body.innerHTML = `
-                <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:#000; color:#00ff41; font-family:'Courier New', Courier, monospace; font-size:18px; letter-spacing:1px; text-align:center; padding:25px; box-sizing:border-box; text-shadow: 0 0 5px rgba(0,255,65,0.5);">
-                    <div style="margin-bottom: 25px;">> WAITING TO LOAD THE PROCESS<span class="matrix-cursor">/</span></div>
-                    <div id="back-error" style="color: #ff3333; font-size: 13px; min-height: 20px; margin-bottom: 35px; font-weight: bold; text-shadow: none; line-height:1.4;"></div>
-                    <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:'Courier New', Courier, monospace; padding:12px 24px; cursor:pointer; font-size:13px; text-transform:uppercase; transition: all 0.3s; text-shadow: 0 0 5px rgba(0,255,65,0.5); box-shadow: 0 0 10px rgba(0,255,65,0.2);">[ BACK ]</button>
-                </div>
-            `;
+            waitingScreen.style.display = 'flex';
+            const errEl = document.getElementById('back-error');
+            if (errEl) {
+                if (window.backClickCount > 0) {
+                    errEl.innerHTML = `> ERROR_0x445: ACCESS_DENIED. DECRYPTION_FAILED (ATTEMPT ${window.backClickCount}/3).`;
+                } else {
+                    errEl.innerHTML = '';
+                }
+            }
         }
     </script>
 </body>
