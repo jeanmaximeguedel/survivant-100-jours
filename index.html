@@ -86,16 +86,33 @@
 
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; text-shadow: none; font-family: sans-serif; }
         
-        /* CENSURE INSTANTANÉE SUR LA GRILLE (CAM 3) */
+        /* TÉMOIN REC CSS GLOBAL ET ANIMÉ */
+        .rec-indicator {
+            position: absolute; top: 5px; right: 5px; font-size: 9px; font-weight: bold;
+            color: #ff3333; background: rgba(0,0,0,0.7); padding: 2px 6px; z-index: 15;
+            font-family: sans-serif; border-radius: 3px; letter-spacing: 0.5px; text-shadow: none;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .rec-dot {
+            width: 6px; height: 6px; background-color: #ff3333; border-radius: 50%;
+            animation: blinkRec 1s infinite alternate; box-shadow: 0 0 6px #ff3333;
+        }
+        @keyframes blinkRec { 0% { opacity: 0.2; } 100% { opacity: 1; } }
+
+        /* EFFET SUR LA ZONE DE CENSURE (CAM 3) */
         .censor-notice {
             display: none; 
             position: absolute; inset: 0; align-items: center; justify-content: center;
             color: #ff3333; font-weight: bold; font-size: 11px; letter-spacing: 1px; z-index: 20;
             text-shadow: 0 0 8px rgba(255, 51, 51, 0.7); pointer-events: none;
         }
-        .cam-container.censor-active .censor-notice { display: flex; }
-        .cam-container.censor-active .cam-media {
-            filter: blur(12px) grayscale(100%) contrast(1.2) brightness(0.8) !important;
+        .cam-container.censor-active .censor-notice,
+        #video-modal.modal-censored .censor-notice { 
+            display: flex; 
+        }
+        .cam-container.censor-active .cam-media,
+        #video-modal.modal-censored .modal-media {
+            filter: blur(14px) grayscale(100%) contrast(1.2) brightness(0.8) !important;
         }
 
         .inline-loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; text-align: center; z-index: 5; }
@@ -134,7 +151,7 @@
         .loading-dots::after { content: '.'; animation: dotsProgress 2s infinite steps(4); }
         @keyframes dotsProgress { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
 
-        /* MODAL POPUP COMPLETEMET ENCAPSULÉE POUR ÉVITER LES DÉBORDEMENTS */
+        /* STRUCTURE MODAL PROTÉGÉE */
         #video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer; }
         #video-modal { 
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
@@ -205,6 +222,8 @@
 
     <div id="video-overlay" style="display: none;"></div>
     <div id="video-modal" style="display: none;">
+        <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
+        <div class="censor-notice">[ CENSORED ]</div>
         <div id="modal-loader-container">
             <div class="modal-loader-text">> DECRYPTION IN PROGRESS...</div>
             <div class="modal-bar-bg">
@@ -227,8 +246,9 @@
         </div>
 
         <div class="cam-grid">
-            <div class="cam-container" id="cam-container-1" onclick="openVideo(this)">
+            <div class="cam-container" id="cam-container-1" onclick="openVideo(this, 1)">
                 <div class="cam-label">CAM_01 // NEF_SUD</div>
+                <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
                 <div class="inline-loader" id="inline-loader-1">
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-1"></div></div>
@@ -236,8 +256,9 @@
                 <img src="cam1-ezgif.com-video-to-gif-converter.gif" class="cam-media cam-gif" id="cam-gif-1" alt="">
             </div>
             
-            <div class="cam-container" id="cam-container-2" onclick="openVideo(this)">
+            <div class="cam-container" id="cam-container-2" onclick="openVideo(this, 2)">
                 <div class="cam-label">CAM_02 // CREATE_B3</div>
+                <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
                 <div class="inline-loader" id="inline-loader-2">
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-2"></div></div>
@@ -245,8 +266,9 @@
                 <video data-src="cam2.mp4" class="cam-media cam-vid" id="cam-vid-2" muted loop playsinline preload="none" style="opacity: 0;"></video>
             </div>
             
-            <div class="cam-container" id="cam-container-3" onclick="openVideo(this)">
+            <div class="cam-container" id="cam-container-3" onclick="openVideo(this, 3)">
                 <div class="cam-label">CAM_03 // CHILL_ZONE</div>
+                <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
                 <div class="censor-notice" id="censor-notice-3">[ CENSORED ]</div>
                 <div class="inline-loader" id="inline-loader-3">
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
@@ -256,8 +278,9 @@
                 <video data-src="cam3.mp4" class="cam-media cam-vid" id="cam-vid-3" muted loop playsinline preload="none"></video>
             </div>
             
-            <div class="cam-container" id="cam-container-4" onclick="openVideo(this)">
+            <div class="cam-container" id="cam-container-4" onclick="openVideo(this, 4)">
                 <div class="cam-label">CAM_04 // TWITCH_STREAM</div>
+                <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
                 <div class="inline-loader" id="inline-loader-4">
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-4"></div></div>
@@ -270,7 +293,7 @@
         <div id="rules">
             <div class="flex-footer">
                 <div class="footer-left secure-gateway-box">
-                    <h3 class="term-title" style="color:var(--neon); margin-top:0;">> S'INSCRIRE POUR CONNAITRE LES PROCHAINES INSTRUCTIONS</h3>
+                    <h3 class="term-title" style="color:var(--neon); margin-top:0;">> S'INSCRIRE POUR ÊTRE PRÉVENU DU LANCEMENT</h3>
                     <form onsubmit="triggerMatrixMelt(event)" style="display: flex; align-items: center; margin-top: 10px;">
                         <span class="terminal-prompt" style="color: var(--neon); font-size: 16px; font-weight: bold; white-space: nowrap;">mail : </span>
                         <div style="position: relative; display: flex; align-items: center; min-width: 220px; margin-left: 5px; cursor: text;" onclick="document.getElementById('subscriber-email').focus()">
@@ -367,14 +390,13 @@
                     loader.style.display = 'none';
                     if (gif) gif.style.opacity = '1';
                     
-                    // CENSURE INSTANTANÉE DE LA CAM 3 PILE APRES LES 600MS DU LOAD INITIAL
+                    // CENSURE CAM 3 ACTIVÉE À 600MS PILE
                     if (id === 3 && container) {
                         container.classList.add('censor-active');
                     }
                 }, 180);
             }
 
-            // GESTION DU TYPE UNIQUE POUR LA CAM 2 (MP4 DIRECT SANS PASSER PAR UN GIF)
             if (id === 2 && video) {
                 const trueSrc = video.getAttribute('data-src');
                 if (trueSrc) {
@@ -396,7 +418,6 @@
                 return; 
             }
 
-            // FLUX HYBRIDE STANDARD POUR LES AUTRES CAMS
             if (gif) {
                 gif.onload = function() { triggerLoadComplete(); };
                 if (gif.complete) { triggerLoadComplete(); }
@@ -406,7 +427,7 @@
             }
 
             if (id !== 1 && video) {
-                const staggeredDelay = 10000 + ((id - 2) * 2000); // Cam 3 = 12s, Cam 4 = 14s
+                const staggeredDelay = 10000 + ((id - 2) * 2000);
 
                 setTimeout(() => {
                     const trueSrc = video.getAttribute('data-src');
@@ -423,14 +444,14 @@
             }
         }
 
-        function openVideo(element) {
+        // FONCTION MODAL SÉCURISÉE CONTRE LES CONFLITS DE CONTENU ET DE FILTRES N&B
+        function openVideo(element, id) {
             const targetVideo = element.querySelector('video');
             const targetGif = element.querySelector('img.cam-gif');
             
             let src = '';
             let isVideo = false;
 
-            // Détection propre du conteneur parent actif
             if (targetVideo && (targetVideo.getAttribute('src') || targetVideo.getAttribute('data-src'))) {
                 src = targetVideo.getAttribute('src') || targetVideo.getAttribute('data-src');
                 isVideo = true;
@@ -439,6 +460,13 @@
                 isVideo = false;
             } else {
                 return;
+            }
+
+            // Gestion de la censure sur le plein écran si Cam 3 cliquée
+            if (id === 3) {
+                videoModal.classList.add('modal-censored');
+            } else {
+                videoModal.classList.remove('modal-censored');
             }
 
             videoOverlay.style.display = 'block';
@@ -494,6 +522,7 @@
         videoOverlay.addEventListener('click', () => {
             videoOverlay.style.display = 'none';
             videoModal.style.display = 'none';
+            videoModal.classList.remove('modal-censored');
             modalVideo.src = ""; 
             modalImg.src = "";
             modalVideo.style.display = 'none';
