@@ -43,7 +43,6 @@
             overflow: hidden;
         }
 
-        /* POINT GPS RECENTRE EXACTEMENT DANS LE BLOC 8 */
         #gps-marker {
             position: absolute; 
             width: 18px; 
@@ -87,7 +86,7 @@
 
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; text-shadow: none; font-family: sans-serif; }
         
-        /* CENSURE INSTANTANÉE CAM 3 : CONFIG CSS */
+        /* CENSURE INSTANTANÉE SUR LA GRILLE (CAM 3) */
         .censor-notice {
             display: none; 
             position: absolute; inset: 0; align-items: center; justify-content: center;
@@ -126,7 +125,6 @@
         .secure-gateway-box {
             border: 2px solid var(--neon); padding: 25px; background: #000; animation: neonBreathe 3s infinite ease-in-out;
         }
-
         @keyframes neonBreathe {
             0%, 100% { border-color: rgba(0, 255, 65, 0.4); box-shadow: 0 0 4px rgba(0, 255, 65, 0.2); }
             50% { border-color: rgba(0, 255, 65, 1); box-shadow: 0 0 15px rgba(0, 255, 65, 0.6); }
@@ -136,13 +134,13 @@
         .loading-dots::after { content: '.'; animation: dotsProgress 2s infinite steps(4); }
         @keyframes dotsProgress { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
 
-        /* MODAL POPUP : OVERFLOW ET NOIR & BLANC STRICTS */
+        /* MODAL POPUP COMPLETEMET ENCAPSULÉE POUR ÉVITER LES DÉBORDEMENTS */
         #video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer; }
         #video-modal { 
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
             width: 85vw; max-width: 800px; aspect-ratio: 16/9; border: 2px solid var(--neon); 
             box-shadow: 0 0 40px rgba(0, 255, 65, 0.3); z-index: 8001; background: #000; 
-            overflow: hidden; /* Blindage : empêche tout débordement */
+            overflow: hidden; 
         }
         @media (min-width: 769px) { #video-modal { width: 60vw; } }
         
@@ -153,11 +151,10 @@
 
         .modal-media { 
             width: 100%; height: 100%; object-fit: cover; display: none; 
-            filter: grayscale(100%) contrast(1.2) brightness(0.7) !important; /* Blindage : force le N&B */
+            filter: grayscale(100%) contrast(1.2) brightness(0.7) !important; 
         }
         .modal-label { position: absolute; top: 10px; left: 10px; font-size: 11px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; font-family: sans-serif; display: none; pointer-events: none; }
 
-        /* ÉCRANS FIXES HACK (AVEC DISPLAY NONE EN LIGNE POUR SÉCURITÉ AU DÉMARRAGE) */
         #fake-desktop {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-transform: none; letter-spacing: normal; text-shadow: none;
@@ -174,7 +171,6 @@
         #terminal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.92); z-index: 3; padding: 20px; font-family: "Courier New", monospace; color: var(--neon); font-size: 11px; line-height: 1.4; overflow: hidden; word-break: break-all; }
         .system-alert-box { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 310px; background: #000; border: 2px solid var(--neon); padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(0,255,65,0.4); z-index: 4; }
         #waiting-screen-container { position: fixed; inset: 0; width: 100vw; height: 100vh; background: #000; color: #00ff41; font-family: 'Courier New', Courier, monospace; font-size: 18px; letter-spacing: 1px; text-align: center; padding: 25px; box-sizing: border-box; text-shadow: 0 0 5px rgba(0,255,65,0.5); z-index: 99990; flex-direction: column; justify-content: center; align-items: center; }
-        #modal-loader-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 75%; text-align: center; }
     </style>
 </head>
 <body>
@@ -246,8 +242,7 @@
                     <div class="inline-loader-text">> INITIALIZING PROTOCOL_100...</div>
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="inline-fill-2"></div></div>
                 </div>
-                <img src="cam2-ezgif.com-video-to-gif-converter.gif" class="cam-media cam-gif" id="cam-gif-2" alt="">
-                <video data-src="cam2.mp4" class="cam-media cam-vid" id="cam-vid-2" muted loop playsinline preload="none"></video>
+                <video data-src="cam2.mp4" class="cam-media cam-vid" id="cam-vid-2" muted loop playsinline preload="none" style="opacity: 0;"></video>
             </div>
             
             <div class="cam-container" id="cam-container-3" onclick="openVideo(this)">
@@ -354,50 +349,80 @@
             const video = document.getElementById(`cam-vid-${id}`);
             const container = document.getElementById(`cam-container-${id}`);
             
-            if (!fill || !loader || !gif) return;
+            if (!fill || !loader) return;
 
-            // Loader ultra-rapide (< 1 seconde max)
-            setTimeout(() => { fill.style.width = '45%'; }, 50);
-            setTimeout(() => { fill.style.width = '100%'; }, 250);
-            
-            // Effacement forcé du loader à 600ms (fin du chargement)
-            setTimeout(() => {
-                loader.style.display = 'none';
-                gif.style.opacity = '1';
-                
-                // NOVEAU MOVE : Activation immédiate de la censure de la Cam 3 pile à 600ms
-                if (id === 3 && container) {
-                    container.classList.add('censor-active');
+            let progress = 0;
+            const loadingInterval = setInterval(() => {
+                if (progress < 92) {
+                    const increment = Math.random() * (95 - progress) * 0.15;
+                    progress += Math.max(0.4, increment);
+                    fill.style.width = `${progress}%`;
                 }
-            }, 600);
+            }, 80);
 
-            // LOGIQUE DE BASCULE MP4 DÉCALÉE EN BACK-GROUND (RESTE INCHANGÉE)
+            function triggerLoadComplete() {
+                clearInterval(loadingInterval);
+                fill.style.width = '100%';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    if (gif) gif.style.opacity = '1';
+                    
+                    // CENSURE INSTANTANÉE DE LA CAM 3 PILE APRES LES 600MS DU LOAD INITIAL
+                    if (id === 3 && container) {
+                        container.classList.add('censor-active');
+                    }
+                }, 180);
+            }
+
+            // GESTION DU TYPE UNIQUE POUR LA CAM 2 (MP4 DIRECT SANS PASSER PAR UN GIF)
+            if (id === 2 && video) {
+                const trueSrc = video.getAttribute('data-src');
+                if (trueSrc) {
+                    video.setAttribute('src', trueSrc);
+                    video.load();
+                    video.onplaying = function() {
+                        clearInterval(loadingInterval);
+                        fill.style.width = '100%';
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                            video.style.opacity = '1';
+                        }, 150);
+                    };
+                    video.play().catch(err => {
+                        triggerLoadComplete();
+                        video.style.opacity = '1';
+                    });
+                }
+                return; 
+            }
+
+            // FLUX HYBRIDE STANDARD POUR LES AUTRES CAMS
+            if (gif) {
+                gif.onload = function() { triggerLoadComplete(); };
+                if (gif.complete) { triggerLoadComplete(); }
+                setTimeout(() => {
+                    if (loader.style.display !== 'none') { triggerLoadComplete(); }
+                }, 600);
+            }
+
             if (id !== 1 && video) {
-                const staggeredDelay = 10000 + ((id - 2) * 2000);
+                const staggeredDelay = 10000 + ((id - 2) * 2000); // Cam 3 = 12s, Cam 4 = 14s
 
                 setTimeout(() => {
                     const trueSrc = video.getAttribute('data-src');
                     if (trueSrc) {
                         video.setAttribute('src', trueSrc);
                         video.load();
-                        
                         video.onplaying = function() {
-                            loader.style.display = 'none'; 
                             video.style.opacity = '1';
-                            setTimeout(() => { gif.style.opacity = '0'; }, 400); 
-                            // La ligne de censure a été retirée d'ici pour être mise plus haut à 600ms
+                            setTimeout(() => { if (gif) gif.style.opacity = '0'; }, 400); 
                         };
-                        
-                        video.play().catch(err => {
-                            console.log(`Autoplay temporisé bloqué pour Cam ${id}`);
-                            loader.style.display = 'none';
-                        });
+                        video.play().catch(err => console.log(`Autoplay temporisé bloqué pour Cam ${id}`));
                     }
                 }, staggeredDelay);
             }
         }
 
-        // OUVERTURE DU MODAL (SUPPORT HYBRIDE GIF / MP4 ET GRÉ POUR ÉVITER LE BORDEL DE COULEUR/TAILLE)
         function openVideo(element) {
             const targetVideo = element.querySelector('video');
             const targetGif = element.querySelector('img.cam-gif');
@@ -405,8 +430,9 @@
             let src = '';
             let isVideo = false;
 
-            if (targetVideo && targetVideo.getAttribute('data-src')) {
-                src = targetVideo.getAttribute('data-src');
+            // Détection propre du conteneur parent actif
+            if (targetVideo && (targetVideo.getAttribute('src') || targetVideo.getAttribute('data-src'))) {
+                src = targetVideo.getAttribute('src') || targetVideo.getAttribute('data-src');
                 isVideo = true;
             } else if (targetGif) {
                 src = targetGif.getAttribute('src');
@@ -423,8 +449,9 @@
             modalLoaderContainer.style.display = 'block';
             modalFill.style.width = '0%';
             
-            setTimeout(() => { modalFill.style.width = '30%'; }, 50);
-            setTimeout(() => { modalFill.style.width = '80%'; }, 200); 
+            setTimeout(() => { modalFill.style.width = '20%'; }, 80);
+            setTimeout(() => { modalFill.style.width = '55%'; }, 250); 
+            setTimeout(() => { modalFill.style.width = '95%'; }, 500); 
 
             if (isVideo) {
                 modalVideo.src = src;
@@ -500,7 +527,6 @@
 
             const emailValue = emailInput.value.trim().toLowerCase();
 
-            // SÉCURITÉ DOUBLE BLINDAGE : Bloque l'envoi webhook immédiatement pour l'utilisateur de test
             if (emailValue === 'test@gmail.fr' || emailValue === 'test@gmail.com' || emailValue === 'test@test.com') {
                 launchMatrixSuccess();
                 return;
@@ -528,7 +554,6 @@
             if (docEl.requestFullscreen) { docEl.requestFullscreen().catch(() => {}); }
 
             fakeDesktop.style.display = 'block';
-
             setTimeout(() => { lockscreen.classList.add('glitching'); }, 400);
 
             setTimeout(() => {
