@@ -15,103 +15,77 @@
             text-transform: uppercase; 
             letter-spacing: -0.5px;
             text-shadow: 0 0 4px rgba(0, 255, 65, 0.4); 
+            padding: 20px;
+            box-sizing: border-box;
         }
         
-        #header { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 2px solid var(--neon); }
+        #header { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 2px solid var(--neon); position: relative; margin-bottom: 15px; }
         
         .status-point {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: var(--neon);
-            border-radius: 50%;
-            margin-left: 8px;
-            box-shadow: 0 0 8px var(--neon);
+            display: inline-block; width: 8px; height: 8px; background-color: var(--neon);
+            border-radius: 50%; margin-left: 8px; box-shadow: 0 0 8px var(--neon);
             animation: pulsePoint 1s infinite alternate;
         }
         @keyframes pulsePoint { 0% { opacity: 0.3; } 100% { opacity: 1; } }
         
+        /* RADAR ET MAP - CORRECTION DU BACKGROUND REPEAT */
         #radar-box {
-            position: relative; 
-            width: 95%; 
-            max-width: 760px; 
-            height: 38vh; 
-            margin: 15px auto 25px auto;
+            position: relative; width: 95%; max-width: 760px; height: 38vh; margin: 15px auto 25px auto;
             border: 2px solid var(--neon); 
-            background: #fff url('plan.png') no-repeat center; 
+            background-color: #fff;
+            background-image: url('plan.png');
+            background-repeat: no-repeat;
+            background-position: center center;
             background-size: contain; 
             overflow: hidden;
         }
 
         #gps-marker {
-            position: absolute; 
-            width: 18px; 
-            height: 18px; 
-            background: var(--gps-purple); 
-            border-radius: 50%; 
-            top: 66%; 
-            left: 69%; 
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px var(--gps-purple); 
-            z-index: 100;
-            animation: breathe 2s ease-in-out infinite;
+            position: absolute; width: 18px; height: 18px; background: var(--gps-purple); 
+            border-radius: 50%; top: 66%; left: 69%; transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px var(--gps-purple); z-index: 100; animation: breathe 2s ease-in-out infinite;
         }
-
         @keyframes breathe {
             0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 5px var(--gps-purple); opacity: 0.8; }
             50% { transform: translate(-50%, -50%) scale(1.4); box-shadow: 0 0 30px var(--gps-purple); opacity: 1; }
             100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 5px var(--gps-purple); opacity: 0.8; }
         }
-
         #gps-marker::after {
-            content: ""; position: absolute; top: 50%; left: 50%;
-            width: 100%; height: 100%; border: 1px solid var(--gps-purple);
-            border-radius: 50%; transform: translate(-50%, -50%);
+            content: ""; position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; 
+            border: 1px solid var(--gps-purple); border-radius: 50%; transform: translate(-50%, -50%);
             animation: ripple 2s linear infinite;
         }
         @keyframes ripple { 0% { width: 14px; height: 14px; opacity: 1; } 100% { width: 100px; height: 100px; opacity: 0; } }
 
+        /* GRILLE DE CAMÉRAS */
         .cam-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 15px; margin-bottom: 25px; }
         @media (min-width: 769px) { .cam-grid { grid-template-columns: repeat(4, 1fr); } }
         
         .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; cursor: pointer; transition: border-color 0.3s; }
         .cam-container:hover { border-color: var(--neon); }
         
-        .cam-media { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; 
-            filter: grayscale(100%) contrast(1.2) brightness(0.7); 
-        }
+        .cam-media { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); }
         .cam-gif { z-index: 1; opacity: 0; transition: opacity 0.4s ease; }
         .cam-vid { z-index: 2; opacity: 0; transition: opacity 0.4s ease; }
 
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 10; text-shadow: none; font-family: sans-serif; }
         
         .rec-indicator {
-            position: absolute; top: 5px; right: 5px; font-size: 9px; font-weight: bold;
-            color: #ff3333; background: rgba(0,0,0,0.7); padding: 2px 6px; z-index: 15;
-            font-family: sans-serif; border-radius: 3px; letter-spacing: 0.5px; text-shadow: none;
-            display: flex; align-items: center; gap: 4px;
+            position: absolute; top: 5px; right: 5px; font-size: 9px; font-weight: bold; color: #ff3333; 
+            background: rgba(0,0,0,0.7); padding: 2px 6px; z-index: 15; font-family: sans-serif; border-radius: 3px; 
+            letter-spacing: 0.5px; text-shadow: none; display: flex; align-items: center; gap: 4px;
         }
-        .rec-dot {
-            width: 6px; height: 6px; background-color: #ff3333; border-radius: 50%;
-            animation: blinkRec 1s infinite alternate; box-shadow: 0 0 6px #ff3333;
-        }
+        .rec-dot { width: 6px; height: 6px; background-color: #ff3333; border-radius: 50%; animation: blinkRec 1s infinite alternate; box-shadow: 0 0 6px #ff3333; }
         @keyframes blinkRec { 0% { opacity: 0.2; } 100% { opacity: 1; } }
 
+        /* CENSURE CAM 3 */
         .censor-notice {
-            display: none; 
-            position: absolute; inset: 0; align-items: center; justify-content: center;
+            display: none; position: absolute; inset: 0; align-items: center; justify-content: center;
             color: #ff3333; font-weight: bold; font-size: 11px; letter-spacing: 1px; z-index: 20;
             text-shadow: 0 0 8px rgba(255, 51, 51, 0.7); pointer-events: none;
         }
-        .cam-container.censor-active .censor-notice,
-        #video-modal.modal-censored .censor-notice { 
-            display: flex; 
-        }
-        .cam-container.censor-active .cam-media,
-        #video-modal.modal-censored .modal-media {
-            filter: blur(12px) grayscale(100%) contrast(1.2) brightness(0.8) !important;
-        }
+        .cam-container.censor-active .censor-notice, #video-modal.modal-censored .censor-notice { display: flex; }
+        .cam-container.censor-active .cam-media, #video-modal.modal-censored .modal-media { filter: blur(12px) grayscale(100%) contrast(1.2) brightness(0.8) !important; }
 
         .inline-loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; text-align: center; z-index: 5; }
         .inline-loader-text { font-size: 8px; margin-bottom: 6px; letter-spacing: 0.5px; }
@@ -123,41 +97,72 @@
         .matrix-cursor { color: var(--neon); font-weight: bold; animation: flash 1.2s infinite; margin-left: 2px; }
         @keyframes flash { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
-        .terminal-submit-btn, .rules-trigger-btn {
+        /* BOUTONS TERMINAL ET RÉSEAUX SOCIAUX SVG */
+        .terminal-submit-btn, .rules-trigger-btn, .vote-action-btn {
             background: transparent; border: 1px solid var(--neon); color: var(--neon);
-            font-family: "Courier New", Courier, monospace; font-size: 11px; padding: 4px 10px;
-            cursor: pointer; text-transform: uppercase;
-            box-shadow: 0 0 5px rgba(0, 255, 65, 0.2); transition: all 0.2s ease;
+            font-family: inherit; font-size: 11px; padding: 5px 12px; cursor: pointer; text-transform: uppercase; text-decoration: none;
+            box-shadow: 0 0 5px rgba(0, 255, 65, 0.2); transition: all 0.2s ease; margin-top: 5px;
         }
-        .terminal-submit-btn:active, .rules-trigger-btn:active { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
-        .rules-trigger-btn { display: inline-block; margin-top: 12px; }
+        .terminal-submit-btn:active, .rules-trigger-btn:active, .vote-action-btn:active { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
+        
+        .social-logo-box {
+            display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px;
+            border: 1px solid var(--neon); background: #000; margin-right: 12px; margin-top: 8px;
+            transition: all 0.2s ease; box-shadow: 0 0 5px rgba(0, 255, 65, 0.2); cursor: pointer;
+        }
+        .social-logo-box:hover { background: rgba(0, 255, 65, 0.1); box-shadow: 0 0 12px var(--neon); }
+        .social-logo-box svg { width: 18px; height: 18px; fill: var(--neon); transition: fill 0.2s ease; }
+        .social-logo-box:hover svg { fill: #fff; }
 
         .flex-footer { display: flex; flex-direction: column; gap: 20px; width: 100%; }
         @media (min-width: 769px) { .flex-footer { flex-direction: row; justify-content: space-between; gap: 40px; } }
-        .footer-left { flex: 1; text-align: left; }
+        .footer-left { flex: 1; text-align: left; display: flex; flex-direction: column; gap: 20px; }
         .footer-right { flex: 1; text-align: left; }
         @media (min-width: 769px) { .footer-right { text-align: right; } }
 
-        .secure-gateway-box {
-            border: 2px solid var(--neon); padding: 25px; background: #000; animation: neonBreathe 3s infinite ease-in-out;
-        }
+        .secure-gateway-box { border: 2px solid var(--neon); padding: 25px; background: #000; animation: neonBreathe 3s infinite ease-in-out; }
         @keyframes neonBreathe {
             0%, 100% { border-color: rgba(0, 255, 65, 0.4); box-shadow: 0 0 4px rgba(0, 255, 65, 0.2); }
             50% { border-color: rgba(0, 255, 65, 1); box-shadow: 0 0 15px rgba(0, 255, 65, 0.6); }
         }
 
-        .loading-dots { font-size: 24px; font-weight: bold; letter-spacing: 4px; margin-top: 5px; height: 20px; color: rgba(255,255,255,0.7); }
-        .loading-dots::after { content: '.'; animation: dotsProgress 2s infinite steps(4); }
-        @keyframes dotsProgress { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+        /* ================= GRILLE DU PANNEAU PROFIL ================= */
+        #profile-screen-layout { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 15px auto; }
+        @media (min-width: 992px) { #profile-screen-layout { grid-template-columns: 320px 1fr 380px; } }
 
-        /* STRUCTURE MODALS */
-        #video-overlay, #rules-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer; }
-        #video-modal, #rules-modal { 
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-            width: 85vw; max-width: 800px; border: 2px solid var(--neon); 
-            box-shadow: 0 0 40px rgba(0, 255, 65, 0.3); z-index: 8001; background: #000; 
-            overflow: hidden; 
+        .hud-panel { border: 2px solid var(--neon); background: #000; padding: 20px; box-shadow: 0 0 15px rgba(0, 255, 65, 0.2); box-sizing: border-box; }
+        .panel-title { color: var(--neon); font-size: 12px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px dashed var(--neon); padding-bottom: 8px; letter-spacing: 0.5px; }
+
+        /* AVATAR FIXÉ EN HTML DIRECT */
+        .character-viewport {
+            width: 100%; height: 340px; border: 1px solid var(--neon); background: rgba(0, 255, 65, 0.02);
+            display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative;
         }
+        .character-sprite { max-width: 95%; max-height: 95%; object-fit: contain; animation: spartanBreathe 3s ease-in-out infinite alternate; display: block; }
+        @keyframes spartanBreathe { 0% { transform: scale(1) translateY(0); } 100% { transform: scale(1.03) translateY(-5px); } }
+        .avatar-error-fallback { font-size: 11px; color: var(--neon); text-align: center; font-weight: bold; padding: 20px; line-height: 1.5; border: 1px dashed #ff3333; margin: 10px; }
+
+        /* INVENTAIRE */
+        .inventory-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 576px) { .inventory-grid { grid-template-columns: repeat(2, 1fr); } }
+        .inventory-card { border: 1px solid #333; background: rgba(255, 255, 255, 0.01); padding: 15px; display: flex; flex-direction: column; gap: 10px; transition: all 0.2s ease; }
+        .inventory-card:hover { border-color: var(--neon); background: rgba(0, 255, 65, 0.03); box-shadow: 0 0 8px rgba(0, 255, 65, 0.2); }
+        .item-header { display: flex; align-items: center; gap: 12px; }
+        .item-big-icon { font-size: 26px; }
+        .item-title { font-size: 13px; font-weight: bold; color: var(--neon); }
+        .item-desc { font-size: 10px; color: #888; line-height: 1.4; text-transform: none; }
+
+        /* VOTES */
+        .vote-pool-box { border: 1px solid var(--neon); padding: 15px; background: #000; margin-top: 15px; }
+        .vote-item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; font-size: 12px; }
+        .vote-item-row:last-child { border-bottom: none; }
+        .vote-counter { color: #fff; font-weight: bold; margin-right: 12px; }
+        .input-box { position: relative; display: flex; align-items: center; width: 100%; margin-top: 8px; border: 1px solid var(--neon); padding: 10px; box-sizing: border-box; background: #000; }
+        .terminal-input { width: 100%; background: transparent; border: none; outline: none; color: var(--neon); font-family: inherit; font-size: 14px; }
+
+        /* OVERLAYS & MODALS */
+        #video-overlay, #rules-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer; }
+        #video-modal, #rules-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85vw; max-width: 800px; border: 2px solid var(--neon); box-shadow: 0 0 40px rgba(0, 255, 65, 0.3); z-index: 8001; background: #000; overflow: hidden; }
         #video-modal { aspect-ratio: 16/9; }
         @media (min-width: 769px) { #video-modal, #rules-modal { width: 60vw; } }
         
@@ -167,29 +172,22 @@
         .rules-list li { margin-bottom: 12px; }
         .rules-list strong { color: var(--neon); }
 
-        .modal-media { 
-            width: 100%; height: 100%; object-fit: cover; display: none; 
-            filter: grayscale(100%) contrast(1.2) brightness(0.7) !important; 
-        }
+        .modal-media { width: 100%; height: 100%; object-fit: cover; display: none; filter: grayscale(100%) contrast(1.2) brightness(0.7) !important; }
         .modal-label { position: absolute; top: 10px; left: 10px; font-size: 11px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; font-family: sans-serif; display: none; pointer-events: none; }
 
-        #fake-desktop {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-transform: none; letter-spacing: normal; text-shadow: none;
-        }
-        #phone-lockscreen {
-            position: absolute; inset: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000') no-repeat center; background-size: cover; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 60px 30px; box-sizing: border-box; color: #fff; z-index: 2;
-        }
+        /* HACK SCREENS */
+        #fake-desktop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-transform: none; letter-spacing: normal; text-shadow: none; }
+        #phone-lockscreen { position: absolute; inset: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000') no-repeat center; background-size: cover; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 60px 30px; box-sizing: border-box; color: #fff; z-index: 2; }
         .phone-time { font-size: 72px; font-weight: 200; margin-bottom: 5px; }
         .phone-date { font-size: 18px; font-weight: 400; opacity: 0.9; }
         .phone-notif { background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); width: 100%; max-width: 340px; padding: 15px; border-radius: 18px; margin-top: 40px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.1); }
         .phone-notif-title { font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; opacity: 0.6; margin-bottom: 4px;}
         .phone-notif-body { font-size: 14px; font-weight: 500; color: #fff; }
-
         #terminal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.92); z-index: 3; padding: 20px; font-family: "Courier New", monospace; color: var(--neon); font-size: 11px; line-height: 1.4; overflow: hidden; word-break: break-all; }
         .system-alert-box { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 310px; background: #000; border: 2px solid var(--neon); padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(0,255,65,0.4); z-index: 4; }
         #waiting-screen-container { position: fixed; inset: 0; width: 100vw; height: 100vh; background: #000; color: #00ff41; font-family: 'Courier New', Courier, monospace; font-size: 18px; letter-spacing: 1px; text-align: center; padding: 25px; box-sizing: border-box; text-shadow: 0 0 5px rgba(0,255,65,0.5); z-index: 99990; flex-direction: column; justify-content: center; align-items: center; }
         #modal-loader-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 75%; text-align: center; }
+        .loading-dots { font-size: 24px; font-weight: bold; letter-spacing: 4px; margin-top: 5px; height: 20px; color: rgba(255,255,255,0.7); }
     </style>
 </head>
 <body>
@@ -200,7 +198,6 @@
                 <div class="phone-time" id="lock-time">15:03</div>
                 <div class="phone-date">Samedi 16 mai</div>
                 <div class="loading-dots"></div>
-                
                 <div class="phone-notif">
                     <div class="phone-notif-title"><span>⚙️ SYSTÈME</span><span>à l'instant</span></div>
                     <div class="phone-notif-body">Mise à jour de sécurité requise.</div>
@@ -219,7 +216,7 @@
     <div id="waiting-screen-container" style="display: none;">
         <div style="margin-bottom: 25px;">> WAITING TO LOAD THE PROCESS<span class="matrix-cursor">/</span></div>
         <div id="back-error" style="color: #ff3333; font-size: 13px; min-height: 20px; margin-bottom: 35px; font-weight: bold; text-shadow: none; line-height:1.4;"></div>
-        <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:'Courier New', Courier, monospace; padding:12px 24px; cursor:pointer; font-size:13px; text-transform:uppercase; transition: all 0.3s; text-shadow: 0 0 5px rgba(0,255,65,0.5); box-shadow: 0 0 10px rgba(0,255,65,0.2);">[ BACK ]</button>
+        <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:inherit; padding:12px 24px; cursor:pointer; font-size:13px; text-transform:uppercase;">[ BACK ]</button>
     </div>
 
     <div id="rules-overlay" onclick="toggleRulesModal(false)"></div>
@@ -245,21 +242,19 @@
         <div class="censor-notice">[ CENSORED ]</div>
         <div id="modal-loader-container">
             <div class="modal-loader-text">> DECRYPTION IN PROGRESS...</div>
-            <div class="modal-bar-bg">
-                <div class="modal-bar-fill" id="modal-fill"></div>
-            </div>
+            <div class="modal-bar-bg"><div class="modal-bar-fill" id="modal-fill"></div></div>
         </div>
         <div class="modal-label" id="modal-label"></div>
         <img id="modal-img" class="modal-media" alt="">
         <video id="modal-video" class="modal-media" autoplay muted loop playsinline></video>
     </div>
 
-    <div id="main-content">
-        <div id="header">
-            <div>> SURVIVANT_001<br>> STATUS: EN ATTENTE <span class="status-point"></span></div>
-            <div style="text-align: right;">DÉBUT PROTOCOLE: 22/05/2026<br><span id="clock">00:00:00:00</span></div>
-        </div>
+    <div id="header">
+        <div>> SURVIVANT_001<br>> STATUS: EN ATTENTE <span class="status-point"></span></div>
+        <div style="text-align: right;">DÉBUT PROTOCOLE: 22/05/2026<br><span id="clock">00J : 00H : 00M : 00S</span></div>
+    </div>
 
+    <div id="view-main-hud">
         <div id="radar-box">
             <div id="gps-marker"></div>
         </div>
@@ -312,21 +307,110 @@
         <div id="rules">
             <div class="flex-footer">
                 <div class="footer-left secure-gateway-box">
-                    <h3 class="term-title" style="color:var(--neon); margin-top:0;">> S'INSCRIRE POUR ÊTRE PRÉVENU DU LANCEMENT</h3>
+                    <h3 style="color:var(--neon); margin-top:0;">> S'INSCRIRE POUR ÊTRE PRÉVENU DU LANCEMENT</h3>
                     <form onsubmit="triggerMatrixMelt(event)" style="display: flex; align-items: center; margin-top: 10px;">
-                        <span class="terminal-prompt" style="color: var(--neon); font-size: 16px; font-weight: bold; white-space: nowrap;">mail : </span>
+                        <span style="color: var(--neon); font-size: 16px; font-weight: bold; white-space: nowrap;">mail : </span>
                         <div style="position: relative; display: flex; align-items: center; min-width: 220px; margin-left: 5px; cursor: text;" onclick="document.getElementById('subscriber-email').focus()">
                             <span id="typed-email" style="color: var(--neon); font-size: 16px; white-space: pre;"></span><span class="matrix-cursor">/</span>
-                            <input type="email" id="subscriber-email" name="email" class="terminal-input" required autocomplete="off" enterkeyhint="go" autofocus style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent;">
+                            <input type="email" id="subscriber-email" class="terminal-input" required autocomplete="off" enterkeyhint="go" style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: transparent; border: none; outline: none; color: transparent; caret-color: transparent;">
                         </div>
-                        <button type="submit" id="submit-btn" class="terminal-submit-btn">[ RUN ]</button>
+                        <button type="submit" id="submit-btn" class="terminal-submit-btn" style="display: none;">[ RUN ]</button>
                     </form>
                 </div>
                 <div class="footer-right" style="padding-top: 10px;">
                     <h3 style="color:var(--neon); margin-top:0;">[PARAMÈTRES DE SURVIE]</h3>
                     - 100 JOURS SANS SORTIR DE STATION F.<br>
-                    - EQUIPEMENT : 0 UNITÉ.<br>
+                    <button class="rules-trigger-btn" onclick="switchView('profile')">[ DOTATION ÉQUIPEMENT ]</button>
                     <button class="rules-trigger-btn" onclick="toggleRulesModal(true)">[ RÈGLES DU DÉFI ]</button>
+                    
+                    <div style="margin-top: 15px; border-top: 1px dashed #222; padding-top: 12px;">
+                        <span style="font-size: 10px; color: #666; display: block; margin-bottom: 5px;">[ SUIVRE LES FLUX S_F ]</span>
+                        <a href="https://www.linkedin.com/in/joaquim-de-belle-ile-338a6933a/" target="_blank" class="social-logo-box" title="LinkedIn">
+                            <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </a>
+                        <a href="https://www.instagram.com/soldout.io/" target="_blank" class="social-logo-box" title="Instagram">
+                            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 1.727-6.98 6.082-.058 1.28-.072 1.688-.072 4.947s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.947.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-1.718 6.979-6.082.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-user-profile" style="display: none;">
+        <button class="terminal-submit-btn" style="margin-bottom: 20px;" onclick="switchView('main')">[ RETOUR ACCUEIL // MAIN_HUD ]</button>
+        
+        <div id="profile-screen-layout">
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="hud-panel">
+                    <div class="panel-title">> SURVIVANT_001 // VIEWPORT</div>
+                    <div class="character-viewport">
+                        <img src="image_812cc7.png" class="character-sprite" alt="SURVIVANT_001" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'avatar-error-fallback\'><br>[ ERREUR : IMAGE INTROUVABLE ]<br>Renomme ton image exacte dans le code (ex: image_812cc7.png)</div>';">
+                    </div>
+                </div>
+                <div class="hud-panel">
+                    <div class="panel-title">> DRIP_CONFIG_TAKAL // ACTIVE</div>
+                    <div style="font-size: 11px; line-height: 1.6;">
+                        - TORSE : MAILLOT FFF MARINIÈRE (WHITE/NAVY)<br>
+                        - BAS : PANTALON NOIR (POLYVALENT)<br>
+                        - CHAUSSURES : VOMERO 5 (COMFORT_MODE)
+                    </div>
+                </div>
+            </div>
+
+            <div class="hud-panel">
+                <div class="panel-title">> INVENTAIRE ACCRÉDITÉ // DOTATION INITIALE</div>
+                <div class="inventory-grid">
+                    <div class="inventory-card">
+                        <div class="item-header"><span class="item-big-icon">💻</span><span class="item-title">MACBOOK PRO</span></div>
+                        <div class="item-desc">Unité de production principale et outil de déploiement réseau pour la gestion des serveurs.</div>
+                    </div>
+                    <div class="inventory-card">
+                        <div class="item-header"><span class="item-big-icon">🎒</span><span class="item-title">BOREALIS CLASSIC</span></div>
+                        <div class="item-desc">Sac à dos technique équipé de sangles de compression et de cordons élastiques.</div>
+                    </div>
+                    <div class="inventory-card">
+                        <div class="item-header"><span class="item-big-icon">🌿</span><span class="item-title">BASILICS</span></div>
+                        <div class="item-desc">Module biologique autonome et d'expérimentation hydroponique implanté dans la zone Create.</div>
+                    </div>
+                    <div class="inventory-card">
+                        <div class="item-header"><span class="item-big-icon">🔌</span><span class="item-title">CHARGEURS CRITIQUES</span></div>
+                        <div class="item-desc">Câblages d'alimentation haute performance requis pour le maintien d'activité du hardware.</div>
+                    </div>
+                </div>
+                <div style="margin-top: 25px; border-top: 1px dashed #333; padding-top: 15px; font-size: 11px; line-height: 1.6; color: #666;">
+                    * PARAMÈTRES LOGISTIQUES : 100 jours fermes / 0 unité complémentaire accordée au démarrage.
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="hud-panel">
+                    <div class="panel-title">> DEMANDE DE LARGAGE // ITEM DROP</div>
+                    <form onsubmit="submitCommunityLoot(event)" style="display: flex; flex-direction: column; gap: 10px;">
+                        <span style="font-size: 10px; color: #666;">PROPOSER UN EXTRA (EX: COUETTE, BROSSE À DENT...) :</span>
+                        <div class="input-box">
+                            <input type="text" id="loot-item-input" class="terminal-input" required placeholder="ENTREZ LE NOM DU MODULE..." autocomplete="off">
+                        </div>
+                        <button type="submit" class="terminal-submit-btn" style="align-self: flex-start;">[ SUGGEST DROP ]</button>
+                    </form>
+                </div>
+
+                <div class="hud-panel">
+                    <div class="panel-title">> COMPTEUR DE PRIORITÉ DES LOOTS</div>
+                    <div id="vote-pool-rows">
+                        <div class="vote-item-row" id="loot-item-1">
+                            <span>01. [ COUETTE ]</span>
+                            <div><span class="vote-counter">(0 VOTES)</span><button class="vote-action-btn" onclick="addLootVote('loot-item-1')">[ +1 ]</button></div>
+                        </div>
+                        <div class="vote-item-row" id="loot-item-2">
+                            <span>02. [ BROSSE À DENT ]</span>
+                            <div><span class="vote-counter">(0 VOTES)</span><button class="vote-action-btn" onclick="addLootVote('loot-item-2')">[ +1 ]</button></div>
+                        </div>
+                        <div class="vote-item-row" id="loot-item-3">
+                            <span>03. [ SERVIETTE ]</span>
+                            <div><span class="vote-counter">(0 VOTES)</span><button class="vote-action-btn" onclick="addLootVote('loot-item-3')">[ +1 ]</button></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -334,19 +418,17 @@
 
     <script>
         const MAKE_WEBHOOK_URL = "METS_TON_URL_DE_WEBHOOK_ICI";
-
         window.backClickCount = 0;
+        let incrementalLootId = 4;
 
         const videoOverlay = document.getElementById('video-overlay');
         const videoModal = document.getElementById('video-modal');
         const modalVideo = document.getElementById('modal-video');
         const modalImg = document.getElementById('modal-img');
         const modalLabel = document.getElementById('modal-label');
-        
         const modalLoaderContainer = document.getElementById('modal-loader-container');
         const modalFill = document.getElementById('modal-fill');
         const waitingScreen = document.getElementById('waiting-screen-container');
-
         const rulesOverlay = document.getElementById('rules-overlay');
         const rulesModal = document.getElementById('rules-modal');
 
@@ -357,10 +439,25 @@
             const el = document.getElementById('lock-time');
             if (el) el.textContent = `${hr}:${min}`;
         }
+        setInterval(syncLockClock, 1000);
         syncLockClock();
 
         if (localStorage.getItem('survivor_registered') === 'true') {
             waitingScreen.style.display = 'flex';
+        }
+
+        function switchView(viewName) {
+            const mainHud = document.getElementById('view-main-hud');
+            const profileScreen = document.getElementById('view-user-profile');
+            
+            if (viewName === 'profile') {
+                mainHud.style.display = 'none';
+                profileScreen.style.display = 'block';
+            } else {
+                profileScreen.style.display = 'none';
+                mainHud.style.display = 'block';
+            }
+            window.scrollTo(0,0);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -376,13 +473,6 @@
                 });
             }
 
-            window.addEventListener('keydown', (e) => {
-                if (e.metaKey || e.ctrlKey || e.altKey || e.key === 'Enter' || e.key === 'Escape') return;
-                if (document.activeElement !== emailInput && emailInput) {
-                    emailInput.focus();
-                }
-            });
-
             for (let i = 1; i <= 4; i++) {
                 setupGifToVideoTransition(i);
             }
@@ -391,6 +481,41 @@
         function toggleRulesModal(show) {
             rulesOverlay.style.display = show ? 'block' : 'none';
             rulesModal.style.display = show ? 'block' : 'none';
+        }
+
+        function submitCommunityLoot(e) {
+            e.preventDefault();
+            const input = document.getElementById('loot-item-input');
+            if (!input || !input.value.trim()) return;
+
+            const name = input.value.trim().toUpperCase();
+            const container = document.getElementById('vote-pool-rows');
+            const rowId = `loot-item-${incrementalLootId++}`;
+            const currentItemIndex = container.children.length + 1;
+            const formattedIndex = String(currentItemIndex).padStart(2, '0');
+
+            const newRow = document.createElement('div');
+            newRow.className = 'vote-item-row';
+            newRow.id = rowId;
+            newRow.innerHTML = `<span>${formattedIndex}. [ ${name} ]</span><div><span class="vote-counter">(0 VOTES)</span><button class="vote-action-btn" onclick="addLootVote('${rowId}')">[ +1 ]</button></div>`;
+            
+            container.appendChild(newRow);
+            input.value = '';
+        }
+
+        function addLootVote(rowId) {
+            const row = document.getElementById(rowId);
+            if (!row) return;
+            const counter = row.querySelector('.vote-counter');
+            const match = counter.textContent.match(/\d+/);
+            if (match) {
+                const currentVotes = parseInt(match[0], 10);
+                counter.textContent = `(${currentVotes + 1} VOTES)`;
+                const btn = row.querySelector('.vote-action-btn');
+                btn.style.background = 'var(--neon)';
+                btn.style.color = '#000';
+                setTimeout(() => { btn.style.background = 'transparent'; btn.style.color = 'var(--neon)'; }, 150);
+            }
         }
 
         function setupGifToVideoTransition(id) {
@@ -431,15 +556,9 @@
                     video.onplaying = function() {
                         clearInterval(loadingInterval);
                         fill.style.width = '100%';
-                        setTimeout(() => {
-                            loader.style.display = 'none';
-                            video.style.opacity = '1';
-                        }, 150);
+                        setTimeout(() => { loader.style.display = 'none'; video.style.opacity = '1'; }, 150);
                     };
-                    video.play().catch(err => {
-                        triggerLoadComplete();
-                        video.style.opacity = '1';
-                    });
+                    video.play().catch(() => { triggerLoadComplete(); video.style.opacity = '1'; });
                 }
                 return; 
             }
@@ -447,24 +566,18 @@
             if (gif) {
                 gif.onload = function() { triggerLoadComplete(); };
                 if (gif.complete) { triggerLoadComplete(); }
-                setTimeout(() => {
-                    if (loader.style.display !== 'none') { triggerLoadComplete(); }
-                }, 600);
+                setTimeout(() => { if (loader.style.display !== 'none') { triggerLoadComplete(); } }, 600);
             }
 
             if (id !== 1 && video) {
                 const staggeredDelay = 10000 + ((id - 2) * 2000);
-
                 setTimeout(() => {
                     const trueSrc = video.getAttribute('data-src');
                     if (trueSrc) {
                         video.setAttribute('src', trueSrc);
                         video.load();
-                        video.onplaying = function() {
-                            video.style.opacity = '1';
-                            setTimeout(() => { if (gif) gif.style.opacity = '0'; }, 400); 
-                        };
-                        video.play().catch(err => console.log(`Autoplay temporisé bloqué pour Cam ${id}`));
+                        video.onplaying = function() { video.style.opacity = '1'; setTimeout(() => { if (gif) gif.style.opacity = '0'; }, 400); };
+                        video.play().catch(() => {});
                     }
                 }, staggeredDelay);
             }
@@ -473,25 +586,16 @@
         function openVideo(element, id) {
             const targetVideo = element.querySelector('video');
             const targetGif = element.querySelector('img.cam-gif');
-            
-            let src = '';
-            let isVideo = false;
+            let src = ''; let isVideo = false;
 
             if (targetVideo && (targetVideo.getAttribute('src') || targetVideo.getAttribute('data-src'))) {
                 src = targetVideo.getAttribute('src') || targetVideo.getAttribute('data-src');
                 isVideo = true;
             } else if (targetGif) {
-                src = targetGif.getAttribute('src');
-                isVideo = false;
-            } else {
-                return;
-            }
+                src = targetGif.getAttribute('src'); isVideo = false;
+            } else { return; }
 
-            if (id === 3) {
-                videoModal.classList.add('modal-censored');
-            } else {
-                videoModal.classList.remove('modal-censored');
-            }
+            if (id === 3) { videoModal.classList.add('modal-censored'); } else { videoModal.classList.remove('modal-censored'); }
 
             videoOverlay.style.display = 'block';
             videoModal.style.display = 'block';
@@ -501,176 +605,85 @@
             modalLoaderContainer.style.display = 'block';
             modalFill.style.width = '0%';
             
-            setTimeout(() => { modalFill.style.width = '20%'; }, 80);
-            setTimeout(() => { modalFill.style.width = '55%'; }, 250); 
-            setTimeout(() => { modalFill.style.width = '95%'; }, 500); 
+            setTimeout(() => { modalFill.style.width = '35%'; }, 50);
+            setTimeout(() => { modalFill.style.width = '85%'; }, 200); 
 
             if (isVideo) {
-                modalVideo.src = src;
-                modalVideo.load();
+                modalVideo.src = src; modalVideo.load();
                 modalVideo.onplaying = function() {
                     modalFill.style.width = '100%';
-                    setTimeout(() => {
-                        modalLoaderContainer.style.display = 'none';
-                        modalVideo.style.display = 'block';
-                        modalLabel.style.display = 'block';
-                    }, 150);
+                    setTimeout(() => { modalLoaderContainer.style.display = 'none'; modalVideo.style.display = 'block'; modalLabel.style.display = 'block'; }, 150);
                 };
                 modalVideo.play().catch(() => {
-                    setTimeout(() => {
-                        modalFill.style.width = '100%';
-                        modalLoaderContainer.style.display = 'none';
-                        modalVideo.style.display = 'block';
-                        modalLabel.style.display = 'block';
-                    }, 1000);
+                    setTimeout(() => { modalFill.style.width = '100%'; modalLoaderContainer.style.display = 'none'; modalVideo.style.display = 'block'; }, 1000);
                 });
             } else {
                 modalImg.src = src;
                 modalImg.onload = function() {
                     modalFill.style.width = '100%';
-                    setTimeout(() => {
-                        modalLoaderContainer.style.display = 'none';
-                        modalImg.style.display = 'block';
-                        modalLabel.style.display = 'block';
-                    }, 150);
+                    setTimeout(() => { modalLoaderContainer.style.display = 'none'; modalImg.style.display = 'block'; modalLabel.style.display = 'block'; }, 150);
                 };
-                if (modalImg.complete) {
-                    modalFill.style.width = '100%';
-                    modalLoaderContainer.style.display = 'none';
-                    modalImg.style.display = 'block';
-                    modalLabel.style.display = 'block';
-                }
             }
         }
 
         videoOverlay.addEventListener('click', () => {
-            videoOverlay.style.display = 'none';
-            videoModal.style.display = 'none';
-            videoModal.classList.remove('modal-censored');
-            modalVideo.src = ""; 
-            modalImg.src = "";
-            modalVideo.style.display = 'none';
-            modalImg.style.display = 'none';
-            modalLabel.style.display = 'none';
-            modalLoaderContainer.style.display = 'none';
-            
-            const emailInput = document.getElementById('subscriber-email');
-            if (emailInput) emailInput.focus();
+            videoOverlay.style.display = 'none'; videoModal.style.display = 'none'; videoModal.classList.remove('modal-censored');
+            modalVideo.src = ""; modalImg.src = ""; modalVideo.style.display = 'none'; modalImg.style.display = 'none'; modalLoaderContainer.style.display = 'none';
         });
 
         function update() {
-            const clockEl = document.getElementById("clock");
-            if (!clockEl) return;
-            const target = new Date("May 22, 2026 00:00:00").getTime();
-            const now = new Date().getTime();
-            const diff = target - now;
-            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            const clockEl = document.getElementById("clock"); if (!clockEl) return;
+            const target = new Date("May 22, 2026 00:00:00").getTime(); const now = new Date().getTime(); const diff = target - now;
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24)); const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); const s = Math.floor((diff % (1000 * 60)) / 1000);
             clockEl.innerHTML = d + "J : " + h + "H : " + m + "M : " + s + "S";
         }
-        setInterval(update, 1000);
-        update();
+        setInterval(update, 1000); update();
 
         function triggerMatrixMelt(e) {
             e.preventDefault();
-            const emailInput = document.getElementById('subscriber-email');
-            if (!emailInput || !emailInput.value) return;
-
+            const emailInput = document.getElementById('subscriber-email'); if (!emailInput || !emailInput.value) return;
             const emailValue = emailInput.value.trim().toLowerCase();
 
-            if (emailValue === 'test@gmail.fr' || emailValue === 'test@gmail.com' || emailValue === 'test@test.com') {
-                launchMatrixSuccess();
-                return;
-            }
+            if (emailValue === 'test@gmail.fr' || emailValue === 'test@gmail.com' || emailValue === 'test@test.com') { launchMatrixSuccess(); return; }
 
             fetch(MAKE_WEBHOOK_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email: emailValue,
-                    timestamp: new Date().toISOString()
-                })
-            }).catch(err => console.error("Erreur Webhook:", err));
-
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: emailValue, timestamp: new Date().toISOString() })
+            }).catch(() => {});
             launchMatrixSuccess();
         }
 
         function launchMatrixSuccess() {
-            const fakeDesktop = document.getElementById('fake-desktop');
-            const lockscreen = document.getElementById('phone-lockscreen');
-            const terminal = document.getElementById('terminal-overlay');
-            const alertBox = document.getElementById('hack-alert-box');
-            
-            const docEl = document.documentElement;
-            if (docEl.requestFullscreen) { docEl.requestFullscreen().catch(() => {}); }
-
+            const fakeDesktop = document.getElementById('fake-desktop'); const lockscreen = document.getElementById('phone-lockscreen'); const terminal = document.getElementById('terminal-overlay'); const alertBox = document.getElementById('hack-alert-box');
+            if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(() => {}); }
             fakeDesktop.style.display = 'block';
             setTimeout(() => { lockscreen.classList.add('glitching'); }, 400);
-
             setTimeout(() => {
-                lockscreen.style.display = 'none';
-                terminal.style.display = 'block';
-                
-                const codes = [
-                    "STATION_F_CORE_BYPASS...", "CONNECTING TO LOCAL_HOST...", "SUCCEEDED.",
-                    "GRANTING ROOT_PRIVILEGES...", "WIPING SECURITY_LOGS...", "OK.",
-                    "OVERRIDING HARDWARE_ENCRYPTION...", "EXTRACTING TOKEN_ID...",
-                    "ANTENNA_CHIP_INJECT: OK", "GPS_LOCK_FORCED: TRUE", "CREATING S_F_BACKDOOR...",
-                    "PROTOCOL_100_LOADED // EXPLOIT DETECTED // SYSTEM FAILURE"
-                ];
+                lockscreen.style.display = 'none'; terminal.style.display = 'block';
+                const codes = ["STATION_F_CORE_BYPASS...", "SUCCEEDED.", "GRANTING ROOT_PRIVILEGES...", "WIPING SECURITY_LOGS...", "OK.", "PROTOCOL_100_LOADED // SYSTEM FAILURE"];
                 let lineCount = 0;
                 const interval = setInterval(() => {
-                    if(lineCount < 40) {
-                        terminal.innerHTML += `> ${codes[Math.floor(Math.random() * codes.length)]}<br>`;
-                        terminal.scrollTop = terminal.scrollHeight;
-                        lineCount++;
-                    } else {
-                        clearInterval(interval);
-                    }
+                    if(lineCount < 30) { terminal.innerHTML += `> ${codes[Math.floor(Math.random() * codes.length)]}<br>`; terminal.scrollTop = terminal.scrollHeight; lineCount++; }
+                    else { clearInterval(interval); }
                 }, 60);
             }, 1600);
-
             setTimeout(() => { alertBox.style.display = 'block'; }, 4200);
-
             setTimeout(() => {
                 try { localStorage.setItem('survivor_registered', 'true'); } catch(e) {}
                 if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-                
-                fakeDesktop.style.display = 'none';
-                lockscreen.style.display = 'flex';
-                lockscreen.classList.remove('glitching');
-                terminal.style.display = 'none';
-                terminal.innerHTML = '';
-                alertBox.style.display = 'none';
-
-                const waitingScreen = document.getElementById('waiting-screen-container');
-                if (waitingScreen) waitingScreen.style.display = 'flex';
+                fakeDesktop.style.display = 'none'; lockscreen.style.display = 'flex'; terminal.style.display = 'none'; terminal.innerHTML = ''; alertBox.style.display = 'none';
+                waitingScreen.style.display = 'flex';
             }, 6500);
         }
 
         function handleBackClick() {
-            window.backClickCount++;
-            const errEl = document.getElementById('back-error');
-            if (window.backClickCount < 3) {
-                if (errEl) {
-                    errEl.innerHTML = `> ERROR_0x445: ACCESS_DENIED. DECRYPTION_FAILED (ATTEMPT ${window.backClickCount}/3).`;
-                }
-            } else {
+            window.backClickCount++; const errEl = document.getElementById('back-error');
+            if (window.backClickCount < 3) { if (errEl) errEl.innerHTML = `> ERROR_0x445: ACCESS_DENIED (ATTEMPT ${window.backClickCount}/3).`; }
+            else {
                 try { localStorage.removeItem('survivor_registered'); } catch(e) {}
-                window.backClickCount = 0;
-                
-                const waitingScreen = document.getElementById('waiting-screen-container');
-                if (waitingScreen) waitingScreen.style.display = 'none';
-                
+                window.backClickCount = 0; waitingScreen.style.display = 'none';
                 const emailInput = document.getElementById('subscriber-email');
-                if (emailInput) {
-                    emailInput.value = '';
-                    document.getElementById('typed-email').textContent = '';
-                    document.getElementById('submit-btn').style.display = 'none';
-                    emailInput.focus();
-                }
+                if (emailInput) { emailInput.value = ''; document.getElementById('typed-email').textContent = ''; document.getElementById('submit-btn').style.display = 'none'; emailInput.focus(); }
             }
         }
     </script>
