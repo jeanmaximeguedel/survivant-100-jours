@@ -59,38 +59,32 @@
         .cam-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 15px; margin-bottom: 25px; }
         @media (min-width: 769px) { .cam-grid { grid-template-columns: repeat(4, 1fr); } }
         
-        /* OPTIMISATION VDO.NINJA NATIVE */
         .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; transition: border-color 0.3s; }
         .cam-container:hover { border-color: var(--neon); }
-        .cam-container::before {
-            content: "[ SYNC_STREAM... ]"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            color: var(--neon); font-family: monospace; font-size: 10px; z-index: 1; animation: flash 1s infinite alternate;
-        }
-        .cam-media { position: absolute; inset: 0; width: 100%; height: 100%; border: none; filter: grayscale(100%) contrast(1.2) brightness(0.7); z-index: 5; }
-        .click-glass { position: absolute; inset: 0; z-index: 20; cursor: pointer; } /* Capte le clic sans bloquer l'iframe */
+        
+        .cam-media { position: absolute; inset: 0; width: 100%; height: 100%; border: none; filter: grayscale(100%) contrast(1.2) brightness(0.7); opacity: 0; transition: opacity 0.4s ease; z-index: 5; }
+        
+        .click-glass { position: absolute; inset: 0; z-index: 20; cursor: pointer; }
 
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 25; text-shadow: none; font-family: sans-serif; pointer-events: none; }
-        .rec-indicator { position: absolute; top: 5px; right: 5px; font-size: 9px; font-weight: bold; color: #ff3333; background: rgba(0,0,0,0.7); padding: 2px 6px; z-index: 25; font-family: sans-serif; border-radius: 3px; letter-spacing: 0.5px; text-shadow: none; display: flex; align-items: center; gap: 4px; pointer-events: none; }
+        
+        .rec-indicator {
+            position: absolute; top: 5px; right: 5px; font-size: 9px; font-weight: bold; color: #ff3333; 
+            background: rgba(0,0,0,0.7); padding: 2px 6px; z-index: 25; font-family: sans-serif; border-radius: 3px; 
+            letter-spacing: 0.5px; text-shadow: none; display: flex; align-items: center; gap: 4px; pointer-events: none;
+        }
         .rec-dot { width: 6px; height: 6px; background-color: #ff3333; border-radius: 50%; animation: blinkRec 1s infinite alternate; box-shadow: 0 0 6px #ff3333; }
         @keyframes blinkRec { 0% { opacity: 0.2; } 100% { opacity: 1; } }
 
-        #rules { padding: 20px; color: #aaa; font-size: 0.9rem; border-top: 1px solid #222; text-shadow: none; }
+        .inline-loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; text-align: center; z-index: 10; transition: opacity 0.3s ease; }
+        .inline-loader-text { font-size: 8px; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .inline-bar-bg { border: 1px solid var(--neon); height: 10px; width: 100%; padding: 1px; box-sizing: border-box; background: #000; }
+        .inline-bar-fill { height: 100%; background: var(--neon); width: 0%; transition: width 0.2s ease-out; }
 
-        .matrix-cursor { color: var(--neon); font-weight: bold; animation: flash 1.2s infinite; margin-left: 2px; }
-        @keyframes flash { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
-
-        .terminal-submit-btn, .rules-trigger-btn, .vote-action-btn, .audio-btn {
-            background: transparent; border: 1px solid var(--neon); color: var(--neon);
-            font-family: inherit; font-size: 11px; padding: 5px 12px; cursor: pointer; text-transform: uppercase; text-decoration: none;
-            box-shadow: 0 0 5px rgba(0, 255, 65, 0.2); transition: all 0.2s ease; margin-top: 5px;
-        }
+        .terminal-submit-btn, .rules-trigger-btn, .vote-action-btn, .audio-btn { background: transparent; border: 1px solid var(--neon); color: var(--neon); font-family: inherit; font-size: 11px; padding: 5px 12px; cursor: pointer; text-transform: uppercase; text-decoration: none; box-shadow: 0 0 5px rgba(0, 255, 65, 0.2); transition: all 0.2s ease; margin-top: 5px; }
         .terminal-submit-btn:active, .rules-trigger-btn:active, .vote-action-btn:active, .audio-btn:active { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
         
-        .social-logo-box {
-            display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px;
-            border: 1px solid var(--neon); background: #000; margin-right: 12px; margin-top: 8px;
-            transition: all 0.2s ease; box-shadow: 0 0 5px rgba(0, 255, 65, 0.2); cursor: pointer;
-        }
+        .social-logo-box { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border: 1px solid var(--neon); background: #000; margin-right: 12px; margin-top: 8px; transition: all 0.2s ease; box-shadow: 0 0 5px rgba(0, 255, 65, 0.2); cursor: pointer; }
         .social-logo-box:hover { background: rgba(0, 255, 65, 0.1); box-shadow: 0 0 12px var(--neon); }
         .social-logo-box svg { width: 18px; height: 18px; fill: var(--neon); transition: fill 0.2s ease; }
         .social-logo-box:hover svg { fill: #fff; }
@@ -113,7 +107,6 @@
         .character-viewport { width: 100%; height: 340px; border: 1px solid var(--neon); background: rgba(0, 255, 65, 0.02); display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
         .character-sprite { max-width: 95%; max-height: 95%; object-fit: contain; animation: spartanBreathe 3s ease-in-out infinite alternate; display: block; }
         @keyframes spartanBreathe { 0% { transform: scale(1) translateY(0); } 100% { transform: scale(1.03) translateY(-5px); } }
-        .avatar-error-fallback { font-size: 11px; color: var(--neon); text-align: center; font-weight: bold; padding: 20px; line-height: 1.5; border: 1px dashed #ff3333; margin: 10px; }
 
         .inventory-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 576px) { .inventory-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -130,7 +123,7 @@
         .input-box { position: relative; display: flex; align-items: center; width: 100%; margin-top: 8px; border: 1px solid var(--neon); padding: 10px; box-sizing: border-box; background: #000; }
         .terminal-input { width: 100%; background: transparent; border: none; outline: none; color: var(--neon); font-family: inherit; font-size: 14px; }
 
-        #video-overlay, #rules-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer; }
+        #video-overlay, #rules-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 8000; cursor: pointer; }
         #video-modal, #rules-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 85vw; max-width: 800px; border: 2px solid var(--neon); box-shadow: 0 0 40px rgba(0, 255, 65, 0.3); z-index: 8001; background: #000; overflow: hidden; }
         #video-modal { aspect-ratio: 16/9; }
         @media (min-width: 769px) { #video-modal, #rules-modal { width: 60vw; } }
@@ -139,76 +132,49 @@
         .rules-title { color: var(--neon); font-size: 16px; font-weight: bold; margin-bottom: 20px; border-bottom: 1px dashed var(--neon); padding-bottom: 8px; }
         .rules-list { list-style: none; padding: 0; margin: 0 0 25px 0; }
         .rules-list li { margin-bottom: 12px; }
-        .rules-list strong { color: var(--neon); }
 
-        .modal-media { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); border: none; z-index: 5; }
-        .modal-label { position: absolute; top: 10px; left: 10px; font-size: 11px; color: #fff; background: rgba(0,0,0,0.8); padding: 4px 8px; z-index: 10; font-family: sans-serif; display: none; pointer-events: none; }
-
-        #fake-desktop { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 99999; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; text-transform: none; letter-spacing: normal; text-shadow: none; }
-        #phone-lockscreen { position: absolute; inset: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000') no-repeat center; background-size: cover; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 60px 30px; box-sizing: border-box; color: #fff; z-index: 2; }
-        .phone-time { font-size: 72px; font-weight: 200; margin-bottom: 5px; }
-        .phone-date { font-size: 18px; font-weight: 400; opacity: 0.9; }
-        .phone-notif { background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); width: 100%; max-width: 340px; padding: 15px; border-radius: 18px; margin-top: 40px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.1); }
-        .phone-notif-title { font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; opacity: 0.6; margin-bottom: 4px;}
-        .phone-notif-body { font-size: 14px; font-weight: 500; color: #fff; }
-        #terminal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.92); z-index: 3; padding: 20px; font-family: "Courier New", monospace; color: var(--neon); font-size: 11px; line-height: 1.4; overflow: hidden; word-break: break-all; }
-        .system-alert-box { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 310px; background: #000; border: 2px solid var(--neon); padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(0,255,65,0.4); z-index: 4; }
-        #waiting-screen-container { position: fixed; inset: 0; width: 100vw; height: 100vh; background: #000; color: #00ff41; font-family: 'Courier New', Courier, monospace; font-size: 18px; letter-spacing: 1px; text-align: center; padding: 25px; box-sizing: border-box; text-shadow: 0 0 5px rgba(0,255,65,0.5); z-index: 99990; flex-direction: column; justify-content: center; align-items: center; }
-        #modal-loader-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 75%; text-align: center; z-index: 1; }
-        .loading-dots { font-size: 24px; font-weight: bold; letter-spacing: 4px; margin-top: 5px; height: 20px; color: rgba(255,255,255,0.7); }
+        .modal-media { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) contrast(1.2) brightness(0.7); border: none; z-index: 5; display: block; opacity: 0; transition: opacity 0.4s ease; }
+        
+        #fake-desktop { position: fixed; inset: 0; background: #000; z-index: 99999; overflow: hidden; font-family: sans-serif; display: none; }
+        #phone-lockscreen { position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000') no-repeat center; background-size: cover; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 60px 30px; color: #fff; z-index: 2; }
+        .phone-notif { background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); width: 100%; max-width: 340px; padding: 15px; border-radius: 18px; margin-top: 40px; border: 1px solid rgba(255,255,255,0.1); }
+        #terminal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.92); z-index: 3; padding: 20px; font-family: monospace; color: var(--neon); font-size: 11px; display: none; word-break: break-all; }
+        .system-alert-box { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); width: 85%; max-width: 310px; background: #000; border: 2px solid var(--neon); padding: 20px; text-align: center; display: none; z-index: 4; }
+        #waiting-screen-container { position: fixed; inset: 0; background: #000; color: #00ff41; font-family: monospace; font-size: 18px; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 99990; }
+        .matrix-cursor { color: var(--neon); font-weight: bold; animation: flash 1.2s infinite; margin-left: 2px; }
     </style>
 </head>
 <body>
 
-    <div id="fake-desktop" style="display: none;">
-        <div id="phone-lockscreen">
-            <div style="text-align: center;">
-                <div class="phone-time" id="lock-time">15:03</div>
-                <div class="phone-date">Samedi 16 mai</div>
-                <div class="loading-dots"></div>
-                <div class="phone-notif">
-                    <div class="phone-notif-title"><span>⚙️ SYSTÈME</span><span>à l'instant</span></div>
-                    <div class="phone-notif-body">Mise à jour de sécurité requise.</div>
-                </div>
-            </div>
-            <div style="font-size: 13px; opacity: 0.6; font-weight: 500; letter-spacing: 0.3px;">▲ Balayer vers le haut pour déverrouiller</div>
+    <div id="fake-desktop">
         </div>
-        <div id="terminal-overlay" style="display: none;"></div>
-        <div class="system-alert-box" id="hack-alert-box" style="display: none;">
-            <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px; letter-spacing: 1px;">> CORE_HACKED <</div>
-            <div style="color: #fff; font-size: 12px; margin-bottom: 15px;">INFILTRATION COMPLETED // SYSTEM_LOCK: ACTIVE</div>
-            <div style="font-size: 10px; color: #888;">BYPASS_PROTOCOL_100 (100%)</div>
-        </div>
-    </div>
 
-    <div id="waiting-screen-container" style="display: none;">
-        <div style="margin-bottom: 25px;">> WAITING TO LOAD THE PROCESS<span class="matrix-cursor">/</span></div>
-        <div id="back-error" style="color: #ff3333; font-size: 13px; min-height: 20px; margin-bottom: 35px; font-weight: bold; text-shadow: none; line-height:1.4;"></div>
-        <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:inherit; padding:12px 24px; cursor:pointer; font-size:13px; text-transform:uppercase;">[ BACK ]</button>
+    <div id="waiting-screen-container">
+        <div style="margin-bottom: 25px;">> WAITING TO LOAD THE PROCESS <span class="matrix-cursor">/</span></div>
+        <div id="back-error" style="color: #ff3333; font-size: 13px; min-height: 20px; margin-bottom: 35px; font-weight: bold;"></div>
+        <button onclick="handleBackClick()" style="background:transparent; border:1px solid #00ff41; color:#00ff41; font-family:inherit; padding:12px 24px; cursor:pointer;">[ BACK ]</button>
     </div>
 
     <div id="rules-overlay" onclick="toggleRulesModal(false)"></div>
-    <div id="rules-modal" style="display: none;">
+    <div id="rules-modal">
         <div class="rules-title">> DIRECTIVES DU PROTOCOLE S_F_100</div>
         <ul class="rules-list">
             <li><strong>01. LOCALISATION :</strong> INTERDIT DE SORTIR DE LA CREATE ZONE.</li>
             <li><strong>02. TEMPORALITÉ :</strong> 100 JOURS FERMES À PARTIR DU 22 MAI, JUSQU'AU 31 AOÛT.</li>
-            <li><strong>03. DOTATION INITIALE :</strong> EN CONFIGURATION STANDARD DE TRAVAIL. AUCUN EFFET DE RECHANGE, AUCUN COMPLÉMENT HYGIÉNIQUE (BROSSE À DENTS EXCLUE).</li>
-            <li><strong>04. LOGISTIQUE ALIMENTAIRE :</strong> APPROVISIONNEMENT EXCLUSIF VIA LES DISTRIBUTEURS AUTOMATIQUES ARCHITECTURÉS DE STATION F.</li>
-            <li><strong>05. SYSTÈME DE CONFORT :</strong> OCTROI UNIQUE PAR INDIVIDUS INCUBÉS OU SPONSORING.</li>
-            <li><strong>06. ASSAINISSEMENT :</strong> ACCÈS AUTORISÉ AUX INFRASTRUCTURES DE DOUCHE LOCALES.</li>
-            <li><strong>07. VECTEURS INVITÉS :</strong> RECOURS AUX CRÉDITS MENSUELS DES INCUBÉS.</li>
+            <li><strong>03. DOTATION INITIALE :</strong> EN CONFIGURATION STANDARD DE TRAVAIL. AUCUN EFFET DE RECHANGE.</li>
+            <li><strong>04. LOGISTIQUE ALIMENTAIRE :</strong> APPROVISIONNEMENT VIA DISTRIBUTEURS STATION F.</li>
+            <li><strong>05. SYSTÈME DE CONFORT :</strong> OCTROI UNIQUE PAR INCUBÉS OU SPONSORING.</li>
         </ul>
         <button class="rules-trigger-btn" onclick="toggleRulesModal(false)">[ CLOSE PROTOCOL ]</button>
     </div>
 
     <div id="video-overlay" onclick="closeModal()"></div>
-    <div id="video-modal" style="display: none;">
+    <div id="video-modal">
         <div class="rec-indicator" style="z-index: 25;"><span class="rec-dot"></span><span>REC</span></div>
-        <div id="modal-loader-container">
-            <div class="modal-loader-text" style="color:var(--neon); font-size:10px; font-family:monospace; margin-bottom:8px;">> SYNC_MODAL_STREAM...</div>
+        <div class="inline-loader" id="modal-loader">
+            <div class="inline-loader-text">> INITIATING FEED...</div>
+            <div class="inline-bar-bg"><div class="inline-bar-fill" id="modal-fill"></div></div>
         </div>
-        <div class="modal-label" id="modal-label"></div>
         <iframe id="modal-iframe" class="modal-media" allow="autoplay; camera; microphone; fullscreen" frameborder="0"></iframe>
     </div>
 
@@ -224,36 +190,52 @@
 
         <div style="padding: 0 15px; display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
             <span style="font-size: 10px; color: #666;">> FLUX DIRECT</span>
-            <button class="audio-btn" id="audio-toggle-btn" onclick="toggleAudio(event)">[ ACTIVER SON (DJI) ]</button>
+            <button class="audio-btn" id="audio-toggle-btn" onclick="toggleAudio(event)">[ ACTIVER SON (CAM 1) ]</button>
         </div>
 
         <div class="cam-grid">
             <div class="cam-container">
-                <div class="cam-label">CAM_01 // MAC</div>
+                <div class="cam-label">CAM 1 // PC</div>
                 <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
+                <div class="inline-loader" id="loader-1">
+                    <div class="inline-loader-text">> SECURING P2P STREAM...</div>
+                    <div class="inline-bar-bg"><div class="inline-bar-fill" id="fill-1"></div></div>
+                </div>
                 <div class="click-glass" onclick="openVideo(1)"></div>
-                <iframe src="https://vdo.ninja/?view=LUv5R89&autostart&muted&clean&transparent&buffer=0" class="cam-media" id="cam-vid-1" allow="autoplay; camera; microphone; fullscreen" frameborder="0"></iframe>
+                <iframe src="https://vdo.ninja/?view=Q3C4zup&autoplay=1&muted=1&autostart=1&clean=1&transparent=1" id="cam-vid-1" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(1)"></iframe>
             </div>
             
             <div class="cam-container">
-                <div class="cam-label">CAM_02 // PC</div>
+                <div class="cam-label">CAM 2 // WEB EXT</div>
                 <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
+                <div class="inline-loader" id="loader-2">
+                    <div class="inline-loader-text">> SECURING P2P STREAM...</div>
+                    <div class="inline-bar-bg"><div class="inline-bar-fill" id="fill-2"></div></div>
+                </div>
                 <div class="click-glass" onclick="openVideo(2)"></div>
-                <iframe src="https://vdo.ninja/?view=WgVTXaH&autostart&muted&clean&transparent&buffer=0" class="cam-media" id="cam-vid-2" allow="autoplay; camera; microphone; fullscreen" frameborder="0"></iframe>
+                <iframe src="https://vdo.ninja/?view=XGtS4qG&autoplay=1&muted=1&autostart=1&clean=1&transparent=1" id="cam-vid-2" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(2)"></iframe>
             </div>
             
             <div class="cam-container">
-                <div class="cam-label">CAM_03 // LARGE</div>
+                <div class="cam-label">CAM 3 // IPHONE</div>
                 <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
+                <div class="inline-loader" id="loader-3">
+                    <div class="inline-loader-text">> SECURING P2P STREAM...</div>
+                    <div class="inline-bar-bg"><div class="inline-bar-fill" id="fill-3"></div></div>
+                </div>
                 <div class="click-glass" onclick="openVideo(3)"></div>
-                <iframe src="https://vdo.ninja/?view=TiYZpds&autostart&muted&clean&transparent&buffer=0" class="cam-media" id="cam-vid-3" allow="autoplay; camera; microphone; fullscreen" frameborder="0"></iframe>
+                <iframe src="https://vdo.ninja/?view=ba8uQSt&autoplay=1&muted=1&autostart=1&clean=1&transparent=1" id="cam-vid-3" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(3)"></iframe>
             </div>
             
             <div class="cam-container">
-                <div class="cam-label">CAM_04 // IPHONE</div>
+                <div class="cam-label">CAM 4 // MAC</div>
                 <div class="rec-indicator"><span class="rec-dot"></span><span>REC</span></div>
+                <div class="inline-loader" id="loader-4">
+                    <div class="inline-loader-text">> SECURING P2P STREAM...</div>
+                    <div class="inline-bar-bg"><div class="inline-bar-fill" id="fill-4"></div></div>
+                </div>
                 <div class="click-glass" onclick="openVideo(4)"></div>
-                <iframe src="https://vdo.ninja/?view=ba8uQSt&autostart&muted&clean&transparent&buffer=0" class="cam-media" id="cam-vid-4" allow="autoplay; camera; microphone; fullscreen" frameborder="0"></iframe>
+                <iframe src="https://vdo.ninja/?view=LUv5R89&autoplay=1&muted=1&autostart=1&clean=1&transparent=1" id="cam-vid-4" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(4)"></iframe>
             </div>
         </div>
 
@@ -319,23 +301,20 @@
                 <div class="inventory-grid">
                     <div class="inventory-card">
                         <div class="item-header"><span class="item-big-icon">💻</span><span class="item-title">MACBOOK PRO</span></div>
-                        <div class="item-desc">Unité de production principale et outil de déploiement réseau pour la gestion des serveurs.</div>
+                        <div class="item-desc">Unité de production principale et outil de déploiement réseau.</div>
                     </div>
                     <div class="inventory-card">
                         <div class="item-header"><span class="item-big-icon">🎒</span><span class="item-title">BOREALIS CLASSIC</span></div>
-                        <div class="item-desc">Sac à dos technique équipé de sangles de compression et de cordons élastiques.</div>
+                        <div class="item-desc">Sac à dos technique équipé de sangles de compression.</div>
                     </div>
                     <div class="inventory-card">
                         <div class="item-header"><span class="item-big-icon">🌿</span><span class="item-title">BASILICS</span></div>
-                        <div class="item-desc">Module biologique autonome et d'expérimentation hydroponique implanté dans la zone Create.</div>
+                        <div class="item-desc">Module biologique autonome.</div>
                     </div>
                     <div class="inventory-card">
                         <div class="item-header"><span class="item-big-icon">🔌</span><span class="item-title">CHARGEURS CRITIQUES</span></div>
-                        <div class="item-desc">Câblages d'alimentation haute performance requis pour le maintien d'activité du hardware.</div>
+                        <div class="item-desc">Câblages d'alimentation haute performance.</div>
                     </div>
-                </div>
-                <div style="margin-top: 25px; border-top: 1px dashed #333; padding-top: 15px; font-size: 11px; line-height: 1.6; color: #666;">
-                    * PARAMÈTRES LOGISTIQUES : 100 jours fermes / 0 unité complémentaire accordée au démarrage.
                 </div>
             </div>
 
@@ -366,12 +345,12 @@
         let isAudioOn = false;
 
         const links = {
-            1: "https://vdo.ninja/?view=LUv5R89",
-            2: "https://vdo.ninja/?view=WgVTXaH",
-            3: "https://vdo.ninja/?view=TiYZpds",
-            4: "https://vdo.ninja/?view=ba8uQSt"
+            1: "https://vdo.ninja/?view=Q3C4zup",
+            2: "https://vdo.ninja/?view=XGtS4qG",
+            3: "https://vdo.ninja/?view=ba8uQSt",
+            4: "https://vdo.ninja/?view=LUv5R89"
         };
-        const vdoParams = "&autostart&clean&transparent&buffer=0";
+        const vdoParams = "&autoplay=1&clean=1&transparent=1";
 
         // --- GESTION DU VOTE & INVENTAIRE ---
         let lootItems = [];
@@ -422,33 +401,23 @@
             e.preventDefault();
             const input = document.getElementById('loot-item-input');
             if (!input || !input.value.trim()) return;
-
             const name = input.value.trim().toUpperCase();
             const newId = 'loot-' + Date.now();
-            
             lootItems.push({ id: newId, name: name, score: 0 });
             localStorage.setItem('sf_loot_items', JSON.stringify(lootItems));
-            
             renderLootItems();
             input.value = '';
         }
 
         function handleVote(id, voteValue) {
             const currentVote = parseInt(localStorage.getItem('my_vote_' + id)) || 0;
-            
-            if (currentVote === voteValue) {
-                alert("UN VOTE PAR UTILISATEUR.");
-                return;
-            }
-
+            if (currentVote === voteValue) { alert("UN VOTE PAR UTILISATEUR."); return; }
             const diff = voteValue - currentVote;
             const itemIndex = lootItems.findIndex(i => i.id === id);
-            
             if (itemIndex > -1) {
                 lootItems[itemIndex].score += diff;
                 localStorage.setItem('sf_loot_items', JSON.stringify(lootItems));
             }
-            
             localStorage.setItem('my_vote_' + id, voteValue);
             renderLootItems();
         }
@@ -461,56 +430,82 @@
             isAudioOn = !isAudioOn;
             
             if (isAudioOn) {
-                cam1.src = links[1] + vdoParams; // Sans muted
+                cam1.src = links[1] + vdoParams + "&muted=0"; 
                 btn.textContent = "[ DÉSACTIVER SON ]";
                 btn.style.background = "var(--neon)";
                 btn.style.color = "#000";
             } else {
-                cam1.src = links[1] + vdoParams + "&muted";
-                btn.textContent = "[ ACTIVER SON (DJI) ]";
+                cam1.src = links[1] + vdoParams + "&muted=1";
+                btn.textContent = "[ ACTIVER SON (CAM 1) ]";
                 btn.style.background = "transparent";
                 btn.style.color = "var(--neon)";
             }
         }
 
-        // --- SCRIPTS INTERFACE & HORLOGES ---
-        const videoOverlay = document.getElementById('video-overlay');
-        const videoModal = document.getElementById('video-modal');
-        const modalLabel = document.getElementById('modal-label');
-        const modalLoaderContainer = document.getElementById('modal-loader-container');
-        const waitingScreen = document.getElementById('waiting-screen-container');
-        const rulesOverlay = document.getElementById('rules-overlay');
-        const rulesModal = document.getElementById('rules-modal');
-
-        function syncLockClock() {
-            const now = new Date();
-            const hr = String(now.getHours()).padStart(2, '0');
-            const min = String(now.getMinutes()).padStart(2, '0');
-            const el = document.getElementById('lock-time');
-            if (el) el.textContent = `${hr}:${min}`;
-        }
-        setInterval(syncLockClock, 1000);
-        syncLockClock();
-
-        if (localStorage.getItem('survivor_registered') === 'true') {
-            waitingScreen.style.display = 'flex';
-        }
-
         function switchView(viewName) {
-            const mainHud = document.getElementById('view-main-hud');
-            const profileScreen = document.getElementById('view-user-profile');
-            if (viewName === 'profile') {
-                mainHud.style.display = 'none';
-                profileScreen.style.display = 'block';
-            } else {
-                profileScreen.style.display = 'none';
-                mainHud.style.display = 'block';
-            }
+            document.getElementById('view-main-hud').style.display = viewName === 'main' ? 'block' : 'none';
+            document.getElementById('view-user-profile').style.display = viewName === 'profile' ? 'block' : 'none';
             window.scrollTo(0,0);
+        }
+
+        function toggleRulesModal(show) {
+            document.getElementById('rules-overlay').style.display = show ? 'block' : 'none';
+            document.getElementById('rules-modal').style.display = show ? 'block' : 'none';
+        }
+
+        // --- GESTION DU CHARGEMENT RÉALISTE ---
+        function startFakeLoaders() {
+            for (let i = 1; i <= 4; i++) {
+                let progress = 0;
+                const fill = document.getElementById('fill-' + i);
+                if (!fill) continue;
+
+                // Phase 1 : Très rapide jusqu'à 50%
+                const fastInterval = setInterval(() => {
+                    progress += 8;
+                    if (progress >= 50) {
+                        progress = 50;
+                        clearInterval(fastInterval);
+                        
+                        // Phase 2 : On rampe à 1% par seconde
+                        const slowInterval = setInterval(() => {
+                            if (progress < 99) {
+                                progress += 1;
+                                fill.style.width = progress + '%';
+                            }
+                        }, 1000);
+                        
+                        // On stocke l'intervalle lent pour pouvoir l'arrêter plus tard
+                        fill.dataset.slowInterval = slowInterval;
+                    }
+                    fill.style.width = progress + '%';
+                }, 50);
+            }
+        }
+
+        // Fonction appelée UNIQUEMENT quand la page vdo.ninja a fini de charger.
+        // On donne 2 secondes au flux vidéo pour arriver, puis on affiche la caméra.
+        function videoReady(id) {
+            setTimeout(() => {
+                const fill = document.getElementById('fill-' + id);
+                const loader = document.getElementById('loader-' + id);
+                const iframe = document.getElementById('cam-vid-' + id);
+                
+                if(fill) {
+                    clearInterval(fill.dataset.slowInterval);
+                    fill.style.width = '100%'; // Jump final à 100%
+                }
+                
+                setTimeout(() => {
+                    if (loader) loader.style.opacity = '0';
+                    if (iframe) iframe.style.opacity = '1'; // La vidéo apparait
+                }, 300);
+            }, 2000); // Marge de 2 sec pour laisser WebRTC afficher sa 1ère image
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             renderLootItems(); 
+            startFakeLoaders(); // Démarre l'animation des barres
 
             const emailInput = document.getElementById('subscriber-email');
             const typedEmailSpan = document.getElementById('typed-email');
@@ -525,32 +520,42 @@
             }
         });
 
-        function toggleRulesModal(show) {
-            rulesOverlay.style.display = show ? 'block' : 'none';
-            rulesModal.style.display = show ? 'block' : 'none';
-        }
+        // --- GESTION MODALES VIDEO ---
+        const videoOverlay = document.getElementById('video-overlay');
+        const videoModal = document.getElementById('video-modal');
 
         function openVideo(id) {
             let targetSrc = links[id] + vdoParams;
-            if (id === 1 && isAudioOn) {
-                // garde le son
-            } else {
-                targetSrc += "&muted";
-            }
+            if (id === 1 && isAudioOn) targetSrc += "&muted=0";
+            else targetSrc += "&muted=1";
 
             videoOverlay.style.display = 'block';
             videoModal.style.display = 'block';
-            modalLoaderContainer.style.display = 'block';
-            modalLabel.style.display = 'none';
             
             const modalIframe = document.getElementById('modal-iframe');
-            modalIframe.style.display = 'none';
-            modalIframe.src = targetSrc;
+            const modalLoader = document.getElementById('modal-loader');
+            const modalFill = document.getElementById('modal-fill');
             
-            modalIframe.onload = function() {
-                modalLoaderContainer.style.display = 'none'; 
-                modalIframe.style.display = 'block'; 
-                modalLabel.style.display = 'block'; 
+            modalIframe.style.opacity = '0';
+            modalLoader.style.display = 'block';
+            modalLoader.style.opacity = '1';
+            modalFill.style.width = '0%';
+            
+            modalIframe.src = targetSrc;
+
+            let modProg = 0;
+            const modInterval = setInterval(() => {
+                if(modProg < 90) { modProg += 15; modalFill.style.width = `${modProg}%`; }
+            }, 100);
+
+            modalIframe.onload = () => {
+                clearInterval(modInterval);
+                modalFill.style.width = '100%';
+                setTimeout(() => {
+                    modalLoader.style.opacity = '0';
+                    modalIframe.style.opacity = '1';
+                    setTimeout(() => modalLoader.style.display = 'none', 300);
+                }, 300);
             };
         }
 
@@ -558,7 +563,7 @@
             videoOverlay.style.display = 'none'; 
             videoModal.style.display = 'none';
             const modalIframe = document.getElementById('modal-iframe');
-            if(modalIframe) { modalIframe.src = ""; modalIframe.style.display = 'none'; }
+            if(modalIframe) { modalIframe.src = ""; modalIframe.style.opacity = '0'; }
         }
 
         // --- TIMER DE TEMPS ÉCOULÉ ---
@@ -569,7 +574,6 @@
             const startTime = new Date("May 22, 2026 16:00:00").getTime(); 
             const now = new Date().getTime(); 
             const diff = now - startTime;
-            
             if (diff < 0) return; 
             
             const d = Math.floor(diff / (1000 * 60 * 60 * 24)); 
@@ -580,13 +584,25 @@
             clockEl.innerHTML = String(d).padStart(2, '0') + "J : " + String(h).padStart(2, '0') + "H : " + String(m).padStart(2, '0') + "M : " + String(s).padStart(2, '0') + "S";
         }
         setInterval(updateTimer, 1000); updateTimer();
+        
+        // --- HACK UI ---
+        function syncLockClock() {
+            const now = new Date();
+            const hr = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            const el = document.getElementById('lock-time');
+            if (el) el.textContent = `${hr}:${min}`;
+        }
+        setInterval(syncLockClock, 1000); syncLockClock();
+
+        if (localStorage.getItem('survivor_registered') === 'true') {
+            document.getElementById('waiting-screen-container').style.display = 'flex';
+        }
 
         function triggerMatrixMelt(e) {
             e.preventDefault();
             const emailInput = document.getElementById('subscriber-email'); if (!emailInput || !emailInput.value) return;
             const emailValue = emailInput.value.trim().toLowerCase();
-
-            if (emailValue === 'test@gmail.fr' || emailValue === 'test@gmail.com' || emailValue === 'test@test.com') { launchMatrixSuccess(); return; }
 
             fetch(MAKE_WEBHOOK_URL, {
                 method: "POST", headers: { "Content-Type": "application/json" },
@@ -599,22 +615,13 @@
             const fakeDesktop = document.getElementById('fake-desktop'); const lockscreen = document.getElementById('phone-lockscreen'); const terminal = document.getElementById('terminal-overlay'); const alertBox = document.getElementById('hack-alert-box');
             if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(() => {}); }
             fakeDesktop.style.display = 'block';
-            setTimeout(() => { lockscreen.classList.add('glitching'); }, 400);
-            setTimeout(() => {
-                lockscreen.style.display = 'none'; terminal.style.display = 'block';
-                const codes = ["STATION_F_CORE_BYPASS...", "SUCCEEDED.", "GRANTING ROOT_PRIVILEGES...", "WIPING SECURITY_LOGS...", "OK.", "PROTOCOL_100_LOADED // SYSTEM FAILURE"];
-                let lineCount = 0;
-                const interval = setInterval(() => {
-                    if(lineCount < 30) { terminal.innerHTML += `> ${codes[Math.floor(Math.random() * codes.length)]}<br>`; terminal.scrollTop = terminal.scrollHeight; lineCount++; }
-                    else { clearInterval(interval); }
-                }, 60);
-            }, 1600);
+            setTimeout(() => { lockscreen.style.display = 'none'; terminal.style.display = 'block'; }, 1600);
             setTimeout(() => { alertBox.style.display = 'block'; }, 4200);
             setTimeout(() => {
                 try { localStorage.setItem('survivor_registered', 'true'); } catch(e) {}
                 if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-                fakeDesktop.style.display = 'none'; lockscreen.style.display = 'flex'; terminal.style.display = 'none'; terminal.innerHTML = ''; alertBox.style.display = 'none';
-                waitingScreen.style.display = 'flex';
+                fakeDesktop.style.display = 'none'; lockscreen.style.display = 'flex'; terminal.style.display = 'none'; alertBox.style.display = 'none';
+                document.getElementById('waiting-screen-container').style.display = 'flex';
             }, 6500);
         }
 
@@ -623,7 +630,7 @@
             if (window.backClickCount < 3) { if (errEl) errEl.innerHTML = `> ERROR_0x445: ACCESS_DENIED (ATTEMPT ${window.backClickCount}/3).`; }
             else {
                 try { localStorage.removeItem('survivor_registered'); } catch(e) {}
-                window.backClickCount = 0; waitingScreen.style.display = 'none';
+                window.backClickCount = 0; document.getElementById('waiting-screen-container').style.display = 'none';
                 const emailInput = document.getElementById('subscriber-email');
                 if (emailInput) { emailInput.value = ''; document.getElementById('typed-email').textContent = ''; document.getElementById('submit-btn').style.display = 'none'; emailInput.focus(); }
             }
