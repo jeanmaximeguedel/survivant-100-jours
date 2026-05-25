@@ -240,7 +240,7 @@
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="fill-3"></div></div>
                 </div>
                 <div class="click-glass" onclick="openVideo(3)"></div>
-                <iframe src="https://vdo.ninja/?view=ba8uQSt&autoplay=1&muted=1&autostart=1&clean=1&transparent=1&noaudio=1" id="cam-vid-3" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(3)"></iframe>
+                <iframe src="https://vdo.ninja/?view=ba8uQSt&autoplay=1&muted=1&autostart=1&clean=1&transparent=1" id="cam-vid-3" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(3)"></iframe>
             </div>
             
             <div class="cam-container">
@@ -251,7 +251,7 @@
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="fill-4"></div></div>
                 </div>
                 <div class="click-glass" onclick="openVideo(4)"></div>
-                <iframe src="https://vdo.ninja/?view=rQeXsds&autoplay=1&muted=1&autostart=1&clean=1&transparent=1&noaudio=1" id="cam-vid-4" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(4)"></iframe>
+                <iframe src="https://vdo.ninja/?view=rQeXsds&autoplay=1&muted=1&autostart=1&clean=1&transparent=1" id="cam-vid-4" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(4)"></iframe>
             </div>
         </div>
 
@@ -438,32 +438,19 @@
             renderLootItems();
         }
 
-        // --- GESTION AUDIO ---
-        // CAM 1 : postMessage (sans reload). CAM 4 : reload iframe (a `&noaudio=1` par defaut pour autoriser l'autoplay).
+        // --- GESTION AUDIO (reload iframe pour chaque cam concernee) ---
         const CAM_PREVIEW_PARAMS = "&autoplay=1&autostart=1&clean=1&transparent=1";
-        function setCam4Audio(enabled) {
-            const iframe = document.getElementById('cam-vid-4');
+        function reloadCamAudio(camId, audioOn) {
+            const iframe = document.getElementById('cam-vid-' + camId);
             if (!iframe) return;
-            const base = links[4] + CAM_PREVIEW_PARAMS;
-            iframe.src = enabled ? base + "&muted=0" : base + "&muted=1&noaudio=1";
+            iframe.src = links[camId] + CAM_PREVIEW_PARAMS + (audioOn ? "&muted=0" : "&muted=1");
         }
 
         function setAudioSource(id) {
             if (id === activeAudioCam) return;
 
-            if (activeAudioCam === 1) {
-                const out = document.getElementById('cam-vid-1');
-                if (out && out.contentWindow) out.contentWindow.postMessage({"mute": true}, "*");
-            } else if (activeAudioCam === 4) {
-                setCam4Audio(false);
-            }
-
-            if (id === 1) {
-                const inn = document.getElementById('cam-vid-1');
-                if (inn && inn.contentWindow) inn.contentWindow.postMessage({"mute": false}, "*");
-            } else if (id === 4) {
-                setCam4Audio(true);
-            }
+            if (activeAudioCam !== null) reloadCamAudio(activeAudioCam, false);
+            if (id !== null) reloadCamAudio(id, true);
 
             activeAudioCam = id;
 
