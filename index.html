@@ -62,7 +62,7 @@
         .cam-container { position: relative; aspect-ratio: 16/9; border: 1px solid #333; background: #000; overflow: hidden; transition: border-color 0.3s; }
         .cam-container:hover { border-color: var(--neon); }
         
-        .cam-media { position: absolute; inset: 0; width: 100%; height: 100%; border: none; filter: grayscale(100%) contrast(1.2) brightness(0.7); opacity: 0; transition: opacity 0.4s ease; z-index: 5; }
+        .cam-media { position: absolute; inset: 0; width: 100%; height: 100%; border: none; filter: grayscale(100%) contrast(1.2) brightness(0.7); z-index: 5; }
         
         .click-glass { position: absolute; inset: 0; z-index: 20; cursor: pointer; }
 
@@ -76,7 +76,7 @@
         .rec-dot { width: 6px; height: 6px; background-color: #ff3333; border-radius: 50%; animation: blinkRec 1s infinite alternate; box-shadow: 0 0 6px #ff3333; }
         @keyframes blinkRec { 0% { opacity: 0.2; } 100% { opacity: 1; } }
 
-        .inline-loader { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80%; text-align: center; z-index: 10; transition: opacity 0.3s ease; }
+        .inline-loader { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 10%; box-sizing: border-box; background: rgba(0, 0, 0, 0.92); z-index: 10; transition: opacity 0.3s ease; }
         .inline-loader-text { font-size: 8px; margin-bottom: 6px; letter-spacing: 0.5px; }
         .inline-bar-bg { border: 1px solid var(--neon); height: 10px; width: 100%; padding: 1px; box-sizing: border-box; background: #000; }
         .inline-bar-fill { height: 100%; background: var(--neon); width: 0%; transition: width 0.2s ease-out; }
@@ -200,7 +200,7 @@
         </div>
 
         <div style="padding: 0 15px; display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; gap: 10px;">
-            <span style="font-size: 10px; color: #666;">> FLUX DIRECT</span>
+            <button class="audio-btn" style="font-size: 12px; padding: 8px 18px; letter-spacing: 0.5px;" onclick="forceStartStreams()">[ LANCER LE LIVE ]</button>
             <div class="audio-source-group">
                 <span style="font-size: 10px; color: #666; align-self: center;">AUDIO :</span>
                 <button class="audio-btn audio-source-btn active" data-cam="off" onclick="setAudioSource(null)">[ OFF ]</button>
@@ -218,7 +218,7 @@
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="fill-1"></div></div>
                 </div>
                 <div class="click-glass" onclick="openVideo(1)"></div>
-                <iframe src="https://vdo.ninja/?view=Q3C4zup&autoplay=1&muted=1&autostart=1&clean=1&transparent=1" id="cam-vid-1" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(1)"></iframe>
+                <iframe id="cam-vid-1" class="cam-media" allow="autoplay; camera; microphone" frameborder="0"></iframe>
             </div>
             
             <div class="cam-container">
@@ -229,7 +229,7 @@
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="fill-2"></div></div>
                 </div>
                 <div class="click-glass" onclick="openVideo(2)"></div>
-                <iframe src="https://vdo.ninja/?view=XGtS4qG&autoplay=1&muted=1&autostart=1&clean=1&transparent=1" id="cam-vid-2" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(2)"></iframe>
+                <iframe id="cam-vid-2" class="cam-media" allow="autoplay; camera; microphone" frameborder="0"></iframe>
             </div>
             
             <div class="cam-container">
@@ -240,7 +240,7 @@
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="fill-3"></div></div>
                 </div>
                 <div class="click-glass" onclick="openVideo(3)"></div>
-                <iframe src="https://vdo.ninja/?view=ba8uQSt&autoplay=1&muted=1&autostart=1&clean=1&transparent=1" id="cam-vid-3" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(3)"></iframe>
+                <iframe id="cam-vid-3" class="cam-media" allow="autoplay; camera; microphone" frameborder="0"></iframe>
             </div>
             
             <div class="cam-container">
@@ -251,7 +251,7 @@
                     <div class="inline-bar-bg"><div class="inline-bar-fill" id="fill-4"></div></div>
                 </div>
                 <div class="click-glass" onclick="openVideo(4)"></div>
-                <iframe src="https://vdo.ninja/?view=rQeXsds&autoplay=1&muted=1&autostart=1&clean=1&transparent=1" id="cam-vid-4" class="cam-media" allow="autoplay; camera; microphone" frameborder="0" onload="videoReady(4)"></iframe>
+                <iframe id="cam-vid-4" class="cam-media" allow="autoplay; camera; microphone" frameborder="0"></iframe>
             </div>
         </div>
 
@@ -366,7 +366,7 @@
             3: "https://vdo.ninja/?view=ba8uQSt",
             4: "https://vdo.ninja/?view=rQeXsds"
         };
-        const vdoParams = "&autoplay=1&clean=1&transparent=1";
+        const vdoParams = "&autoplay=1&autostart=1&clean=1&transparent=1";
 
         // --- GESTION DU VOTE & INVENTAIRE ---
         let lootItems = [];
@@ -443,6 +443,9 @@
         function reloadCamAudio(camId, audioOn) {
             const iframe = document.getElementById('cam-vid-' + camId);
             if (!iframe) return;
+            const loader = document.getElementById('loader-' + camId);
+            if (loader) loader.style.opacity = '1';
+            startFakeLoader(camId);
             iframe.src = links[camId] + CAM_PREVIEW_PARAMS + (audioOn ? "&muted=0" : "&muted=1");
         }
 
@@ -478,59 +481,68 @@
             document.getElementById('rules-modal').style.display = show ? 'block' : 'none';
         }
 
-        // --- GESTION DU CHARGEMENT RÉALISTE ---
-        function startFakeLoaders() {
-            for (let i = 1; i <= 4; i++) {
-                let progress = 0;
-                const fill = document.getElementById('fill-' + i);
-                if (!fill) continue;
+        // --- GESTION DU CHARGEMENT RÉALISTE (par cam) ---
+        const CAM_IFRAME_PARAMS = "&autoplay=1&muted=1&autostart=1&clean=1&transparent=1";
 
-                // Phase 1 : Très rapide jusqu'à 50%
-                const fastInterval = setInterval(() => {
-                    progress += 8;
-                    if (progress >= 50) {
-                        progress = 50;
-                        clearInterval(fastInterval);
-                        
-                        // Phase 2 : On rampe à 1% par seconde
-                        const slowInterval = setInterval(() => {
-                            if (progress < 99) {
-                                progress += 1;
-                                fill.style.width = progress + '%';
-                            }
-                        }, 1000);
-                        
-                        // On stocke l'intervalle lent pour pouvoir l'arrêter plus tard
-                        fill.dataset.slowInterval = slowInterval;
-                    }
-                    fill.style.width = progress + '%';
-                }, 50);
-            }
+        function startFakeLoader(id) {
+            const fill = document.getElementById('fill-' + id);
+            if (!fill) return;
+            if (fill.dataset.slowInterval) clearInterval(fill.dataset.slowInterval);
+            fill.style.width = '0%';
+            let progress = 0;
+            const fastInterval = setInterval(() => {
+                progress += 8;
+                if (progress >= 50) {
+                    progress = 50;
+                    clearInterval(fastInterval);
+                    const slowInterval = setInterval(() => {
+                        if (progress < 99) {
+                            progress += 1;
+                            fill.style.width = progress + '%';
+                        }
+                    }, 1000);
+                    fill.dataset.slowInterval = slowInterval;
+                }
+                fill.style.width = progress + '%';
+            }, 50);
         }
 
-        // Fonction appelée UNIQUEMENT quand la page vdo.ninja a fini de charger.
-        // On donne 2 secondes au flux vidéo pour arriver, puis on affiche la caméra.
+        function loadCam(id) {
+            const iframe = document.getElementById('cam-vid-' + id);
+            if (!iframe) return;
+            const loader = document.getElementById('loader-' + id);
+            if (loader) { loader.style.opacity = '1'; loader.style.display = 'flex'; }
+            startFakeLoader(id);
+            iframe.src = links[id] + CAM_IFRAME_PARAMS;
+            iframe.onload = () => videoReady(id);
+        }
+
+        // Appelee quand la page vdo.ninja a fini de charger. 2s de marge pour le 1er frame WebRTC.
         function videoReady(id) {
             setTimeout(() => {
                 const fill = document.getElementById('fill-' + id);
                 const loader = document.getElementById('loader-' + id);
-                const iframe = document.getElementById('cam-vid-' + id);
-                
-                if(fill) {
+
+                if (fill) {
                     clearInterval(fill.dataset.slowInterval);
-                    fill.style.width = '100%'; // Jump final à 100%
+                    fill.style.width = '100%';
                 }
-                
+
                 setTimeout(() => {
                     if (loader) loader.style.opacity = '0';
-                    if (iframe) iframe.style.opacity = '1'; // La vidéo apparait
                 }, 300);
-            }, 2000); // Marge de 2 sec pour laisser WebRTC afficher sa 1ère image
+            }, 2000);
+        }
+
+        // Bouton [ LANCER LE LIVE ] : recharge les 4 iframes avec le user gesture du clic
+        // => Chrome/iframes cross-origin autorisent l'autoplay
+        function forceStartStreams() {
+            [1, 2, 3, 4].forEach(id => loadCam(id));
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            renderLootItems(); 
-            startFakeLoaders(); // Démarre l'animation des barres
+            renderLootItems();
+            [1, 2, 3, 4].forEach(id => loadCam(id));
 
             const emailInput = document.getElementById('subscriber-email');
             const typedEmailSpan = document.getElementById('typed-email');
@@ -549,23 +561,32 @@
         const videoOverlay = document.getElementById('video-overlay');
         const videoModal = document.getElementById('video-modal');
 
+        let pausedPreviewId = null;
         function openVideo(id) {
+            // Pause la preview correspondante pour liberer le slot viewer de la source
+            const previewIframe = document.getElementById('cam-vid-' + id);
+            if (previewIframe) {
+                previewIframe.dataset.savedSrc = previewIframe.src;
+                previewIframe.src = 'about:blank';
+                pausedPreviewId = id;
+            }
+
             let targetSrc = links[id] + vdoParams;
             if (id === activeAudioCam) targetSrc += "&muted=0";
             else targetSrc += "&muted=1";
 
             videoOverlay.style.display = 'block';
             videoModal.style.display = 'block';
-            
+
             const modalIframe = document.getElementById('modal-iframe');
             const modalLoader = document.getElementById('modal-loader');
             const modalFill = document.getElementById('modal-fill');
-            
+
             modalIframe.style.opacity = '0';
-            modalLoader.style.display = 'block';
+            modalLoader.style.display = 'flex';
             modalLoader.style.opacity = '1';
             modalFill.style.width = '0%';
-            
+
             modalIframe.src = targetSrc;
 
             let modProg = 0;
@@ -585,10 +606,24 @@
         }
 
         function closeModal() {
-            videoOverlay.style.display = 'none'; 
+            videoOverlay.style.display = 'none';
             videoModal.style.display = 'none';
             const modalIframe = document.getElementById('modal-iframe');
             if(modalIframe) { modalIframe.src = ""; modalIframe.style.opacity = '0'; }
+
+            // Relance la preview qu'on avait mise en pause
+            if (pausedPreviewId !== null) {
+                const previewIframe = document.getElementById('cam-vid-' + pausedPreviewId);
+                if (previewIframe && previewIframe.dataset.savedSrc) {
+                    const loader = document.getElementById('loader-' + pausedPreviewId);
+                    if (loader) loader.style.opacity = '1';
+                    startFakeLoader(pausedPreviewId);
+                    previewIframe.onload = () => videoReady(pausedPreviewId);
+                    previewIframe.src = previewIframe.dataset.savedSrc;
+                    delete previewIframe.dataset.savedSrc;
+                }
+                pausedPreviewId = null;
+            }
         }
 
         // --- TIMER DE TEMPS ÉCOULÉ ---
