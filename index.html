@@ -69,10 +69,10 @@
 
         .click-glass { position: absolute; inset: 0; z-index: 20; cursor: pointer; }
 
-        .cam-play-btn { position: absolute; inset: 0; z-index: 30; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); border: none; padding: 0; cursor: pointer; }
+        .cam-play-btn { position: absolute; inset: 0; z-index: 30; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); border: none; padding: 0; cursor: pointer; }
         .cam-play-btn.show { display: flex; }
-        .cam-play-btn svg { width: 46px; height: 46px; fill: var(--neon); filter: drop-shadow(0 0 8px var(--neon)); transition: transform 0.2s ease; }
-        .cam-play-btn:hover svg { transform: scale(1.18); }
+        .cam-play-btn svg { width: 58px; height: 58px; opacity: 0.9; transition: transform 0.2s ease, opacity 0.2s ease; }
+        .cam-play-btn:hover svg { transform: scale(1.1); opacity: 1; }
 
         .cam-label { position: absolute; top: 5px; left: 5px; font-size: 9px; color: #fff; background: rgba(0,0,0,0.7); padding: 2px 5px; z-index: 25; text-shadow: none; font-family: sans-serif; pointer-events: none; }
         
@@ -208,7 +208,7 @@
                 <iframe id="cam-live-1" class="cam-media" allow="autoplay; camera; microphone" frameborder="0"></iframe>
                 <video id="cam-vid-1" class="cam-media cam-fake" muted loop playsinline preload="auto"></video>
                 <div class="click-glass" onclick="openVideo(1)"></div>
-                <button class="cam-play-btn" id="play-btn-1" onclick="startAllCams()" aria-label="Lancer le live"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+                <button class="cam-play-btn" id="play-btn-1" onclick="startAllCams()" aria-label="Lancer le live"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="rgba(0,0,0,0.45)" stroke="#fff" stroke-width="4"/><path d="M40 31 L40 69 L70 50 Z" fill="#fff"/></svg></button>
             </div>
 
             <div class="cam-container">
@@ -221,7 +221,7 @@
                 <iframe id="cam-live-2" class="cam-media" allow="autoplay; camera; microphone" frameborder="0"></iframe>
                 <video id="cam-vid-2" class="cam-media cam-fake" muted loop playsinline preload="auto"></video>
                 <div class="click-glass" onclick="openVideo(2)"></div>
-                <button class="cam-play-btn" id="play-btn-2" onclick="startAllCams()" aria-label="Lancer le live"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+                <button class="cam-play-btn" id="play-btn-2" onclick="startAllCams()" aria-label="Lancer le live"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="rgba(0,0,0,0.45)" stroke="#fff" stroke-width="4"/><path d="M40 31 L40 69 L70 50 Z" fill="#fff"/></svg></button>
             </div>
 
             <div class="cam-container">
@@ -234,7 +234,7 @@
                 <iframe id="cam-live-3" class="cam-media" allow="autoplay; camera; microphone" frameborder="0"></iframe>
                 <video id="cam-vid-3" class="cam-media cam-fake" muted loop playsinline preload="auto"></video>
                 <div class="click-glass" onclick="openVideo(3)"></div>
-                <button class="cam-play-btn" id="play-btn-3" onclick="startAllCams()" aria-label="Lancer le live"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+                <button class="cam-play-btn" id="play-btn-3" onclick="startAllCams()" aria-label="Lancer le live"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="rgba(0,0,0,0.45)" stroke="#fff" stroke-width="4"/><path d="M40 31 L40 69 L70 50 Z" fill="#fff"/></svg></button>
             </div>
 
             <div class="cam-container">
@@ -247,7 +247,7 @@
                 <iframe id="cam-live-4" class="cam-media" allow="autoplay; camera; microphone" frameborder="0"></iframe>
                 <video id="cam-vid-4" class="cam-media cam-fake" muted loop playsinline preload="auto"></video>
                 <div class="click-glass" onclick="openVideo(4)"></div>
-                <button class="cam-play-btn" id="play-btn-4" onclick="startAllCams()" aria-label="Lancer le live"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+                <button class="cam-play-btn" id="play-btn-4" onclick="startAllCams()" aria-label="Lancer le live"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="rgba(0,0,0,0.45)" stroke="#fff" stroke-width="4"/><path d="M40 31 L40 69 L70 50 Z" fill="#fff"/></svg></button>
             </div>
         </div>
 
